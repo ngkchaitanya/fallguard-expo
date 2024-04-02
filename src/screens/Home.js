@@ -1,7 +1,16 @@
-import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+
+// import { database } from '../firebaseConfig';
+import { FirebaseContext } from '../contexts/FirebaseContext';
+import { onValue, ref, set } from 'firebase/database';
 
 export default function Home({ navigation }) {
+    const { fbDB } = useContext(FirebaseContext);
+
+    const [people, setPeople] = useState([]);
+    const [textInp, setTextInp] = useState(null);
+
     const _openFallDetection = () => {
         navigation.navigate('Fall')
     }
@@ -9,6 +18,30 @@ export default function Home({ navigation }) {
     const _openEntry = () => {
         navigation.navigate('Entry')
     }
+
+    const _onChangeInput = (val) => {
+        console.log("text inp: ", val)
+        setTextInp(val);
+    }
+
+    const _enterName = () => {
+        set(ref(fbDB, 'test'), [...people, textInp]
+        );
+    }
+
+    useEffect(() => {
+        // show loading until all the things are loaded
+        console.log("---------")
+
+        const starCountRef = ref(fbDB, 'test');
+        console.log("starCountRef: ", starCountRef)
+        onValue(starCountRef, (snapshot) => {
+            var data = snapshot.val();
+            console.log("data: ", data)
+
+            setPeople(data);
+        });
+    }, [])
 
     return (
         <View style={styles.container}>
@@ -19,6 +52,23 @@ export default function Home({ navigation }) {
             <TouchableOpacity onPress={_openEntry} style={[styles.button, styles.marT10]}>
                 <Text style={styles.buttonText}>Open Entry Screens</Text>
             </TouchableOpacity>
+            <View>
+                <TextInput
+                    style={styles.input}
+                    onChangeText={_onChangeInput}
+                    value={textInp}
+                    placeholder="useless placeholder"
+                // keyboardType="numeric"
+                />
+                <TouchableOpacity onPress={_enterName} style={[styles.button, styles.marT10]}>
+                    <Text style={styles.buttonText}>Enter Name</Text>
+                </TouchableOpacity>
+            </View>
+            <View>
+                {people && people.map((name) => (
+                    <Text key={name}>{name}</Text>
+                ))}
+            </View>
         </View>
     );
 }
@@ -31,6 +81,12 @@ const styles = StyleSheet.create({
     },
     text: {
         textAlign: 'center',
+    },
+    input: {
+        height: 40,
+        margin: 12,
+        borderWidth: 1,
+        padding: 10,
     },
     button: {
         //   flex: 1,
