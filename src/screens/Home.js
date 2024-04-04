@@ -29,6 +29,10 @@ export default function Home({ navigation }) {
         );
     }
 
+    const _openTracking = () => {
+        navigation.navigate('Track')
+    }
+
     useEffect(() => {
         // show loading until all the things are loaded
         console.log("---------")
@@ -51,6 +55,9 @@ export default function Home({ navigation }) {
             </TouchableOpacity>
             <TouchableOpacity onPress={_openEntry} style={[styles.button, styles.marT10]}>
                 <Text style={styles.buttonText}>Open Entry Screens</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={_openTracking} style={[styles.button, styles.marT10]}>
+                <Text style={styles.buttonText}>Open Tracking Screen</Text>
             </TouchableOpacity>
             <View>
                 <TextInput
@@ -87,6 +94,10 @@ const styles = StyleSheet.create({
         margin: 12,
         borderWidth: 1,
         padding: 10,
+    },
+    paragraph: {
+        fontSize: 18,
+        textAlign: 'center',
     },
     button: {
         //   flex: 1,

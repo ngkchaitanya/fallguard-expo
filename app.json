@@ -32,6 +32,14 @@
         "projectId": "6fe2f08f-e0d8-4fb8-92ad-1eae2e63876f"
       }
     },
-    "owner": "primetier"
+    "owner": "primetier",
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysPermission": "Allow $(PRODUCT_NAME) to use your location"
+        }
+      ]
+    ]
   }
 }

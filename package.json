@@ -11,7 +11,10 @@
   "dependencies": {
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/native-stack": "^6.9.26",
+    "axios": "^1.6.8",
     "expo": "~50.0.14",
+    "expo-device": "~5.9.3",
+    "expo-location": "~16.5.5",
     "expo-sensors": "~12.9.1",
     "expo-status-bar": "~1.11.1",
     "firebase": "^10.10.0",

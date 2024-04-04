@@ -9,6 +9,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from './screens/Home';
 import Entry from './screens/Entry';
 import FallDetection from './screens/FallDetection';
+import Tracking from './screens/Tracking';
 import { FirebaseContext } from './contexts/FirebaseContext';
 import { Text, View } from 'react-native';
 
@@ -39,6 +40,7 @@ export default function Index() {
                         <Stack.Screen name="Home" component={Home} />
                         <Stack.Screen name="Entry" component={Entry} />
                         <Stack.Screen name="Fall" component={FallDetection} />
+                        <Stack.Screen name="Track" component={Tracking} />
                     </Stack.Navigator>
                 </NavigationContainer>
             ) : (
