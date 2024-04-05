@@ -10,6 +10,14 @@ export default function Home({ navigation }) {
         navigation.navigate('Entry')
     }
 
+    const _openSeverity = () => {
+        navigation.navigate('Severity')
+    }
+
+    const _openFallDetected = () => {
+        navigation.navigate('FallDetected')
+    }
+
     return (
         <View style={styles.container}>
             <Text style={styles.text}>Home Screen</Text>
@@ -18,6 +26,12 @@ export default function Home({ navigation }) {
             </TouchableOpacity>
             <TouchableOpacity onPress={_openEntry} style={[styles.button, styles.marT10]}>
                 <Text style={styles.buttonText}>Open Entry Screens</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={_openSeverity} style={[styles.button, styles.marT10]}>
+                <Text style={styles.buttonText}>Open Severity Screens</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={_openFallDetected} style={[styles.button, styles.marT10]}>
+                <Text style={styles.buttonText}>Fall detected</Text>
             </TouchableOpacity>
         </View>
     );

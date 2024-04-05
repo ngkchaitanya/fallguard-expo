@@ -14,6 +14,7 @@ export default function FallDetection() {
     z: 0,
   });
   const [fallDetected, setFallDetected] = useState(false);
+  const [isFall, setIsFall] = useState(0);
 
   const [accSubscription, setAccSubscription] = useState(null);
   const [gyroSubscription, setGyroSubscription] = useState(null);
@@ -30,11 +31,18 @@ export default function FallDetection() {
 
   const fallThreshold = 2;
   const orientationThreshold = 1.5;
+  const AGVeSRThreshold = 30; // Combined magnitude of Accelerometer and Gyroscope
+  const AlimThreshold = 30; // Acceleration magnitude threshold
+  const AlphaThreshold = 65; // Tilt angle threshold
+  const GyroReDiThreshold = 50; // Gyroscope magnitude threshold
+  const AGPeakAccelThreshold = 40; // Peak Accelerometer magnitude threshold
+  const AGPeakGyroThreshold = 40; // Peak Gyroscope magnitude threshold
+  
 
   const _subscribe = () => {
     console.log("--- Subscription ---")
     setFallDetected(false);
-
+    
     Accelerometer.setUpdateInterval(100);
     Gyroscope.setUpdateInterval(100);
 
@@ -69,20 +77,36 @@ export default function FallDetection() {
   useEffect(() => {
     if (!fallDetected) {
       console.log("--- Fall Check UseEffect ---")
-      const acceleration = Math.sqrt(accData.x * 2 + accData.y * 2 + accData.z ** 2);
+      
+      const accelMagnitude = Math.sqrt(accData.x ** 2 + accData.y ** 2 + accData.z ** 2);
+      const gyroMagnitude = Math.sqrt(gyroData.x ** 2 + gyroData.y ** 2 + gyroData.z ** 2);
+      if(accelMagnitude + gyroMagnitude > AGVeSRThreshold){
+        setIsFall(prevCount => prevCount + 1);
+      }
+      const magnitude = Math.sqrt(accData.x ** 2 + accData.y ** 2 + accData.z ** 2);
+      if( magnitude > AlimThreshold)  setIsFall(prevCount => prevCount + 1);
+       
+      // const tiltAngle = Math.atan2(accData.y, accData.z) * (180 / Math.PI);
+      // if(Math.abs(tiltAngle) > AlphaThreshold)  setIsFall(prevCount => prevCount + 1);
 
-      if (acceleration > fallThreshold) {
-        const orientationChange = Math.sqrt(gyroData.x * 2 + gyroData.y * 2 + gyroData.z ** 2);
+      const mag = Math.sqrt(gyroData.x ** 2 + gyroData.y ** 2 + gyroData.z ** 2);
+      if(mag > GyroReDiThreshold)  setIsFall(prevCount => prevCount + 1);
 
-        if (orientationChange > orientationThreshold) {
+      const accelMag = Math.sqrt(accData.x ** 2 + accData.y ** 2 + accData.z ** 2);
+      const gyroMag = Math.sqrt(gyroData.x ** 2 + gyroData.y ** 2 + gyroData.z ** 2);
+      if(accelMag > AGPeakAccelThreshold && gyroMag > AGPeakGyroThreshold)  setIsFall(prevCount => prevCount + 1);
+
+      if(isFall>=3){
+        
           // fallDetected = true;
           console.log('@@@ Fall detected!');
           setFallDetected(true);
           _unsubscribe();
-        }
+        
       }
     }
   }, [accData, gyroData, fallDetected])
+
 
   return (
     <View style={styles.container}>
@@ -109,7 +133,11 @@ export default function FallDetection() {
         <>
           <Text style={styles.fallText}>Fall Detected!!</Text>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={_subscribe} style={[styles.button, styles.fallButton]}>
+            <TouchableOpacity  onPress={() => {
+    setFallDetected(false); // Reset fall detection
+    setIsFall(0);
+    _subscribe(); // Re-subscribe to sensor data
+}} style={[styles.button, styles.fallButton]}>
               <Text style={[styles.text, styles.fallButtonText]}>Resume Detection</Text>
             </TouchableOpacity>
           </View>
