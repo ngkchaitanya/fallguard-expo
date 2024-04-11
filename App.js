@@ -5,11 +5,14 @@ import FallDetection from './src/screens/FallDetection';
 import Entry from './src/screens/Entry';
 import Home from './src/screens/Home';
 import Login from './src/screens/login';
+import Signup from './src/screens/signup';
+import Welcome from './src/screens/Welcome';
 
 //const Stack = createNativeStackNavigator();
 
 export default function App() {
-  return <Login/>
+  return <Signup/>
+
     /*<NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Home" component={Home} />

@@ -23,7 +23,11 @@ import { StyledContainer,
          ButtonText,
          Colors,
          Msgox,
-         Line
+         Line,
+         ExtraView,
+         ExtraText,
+         TextLink,
+         TextLinkContent
         } from './../components/styles';
 import {view} from 'react-native';
 
@@ -75,20 +79,21 @@ const Login = () => {
                         hidePassword={hidePassword}
                         setHidePassword={setHidePassword}
                         />
-                        <MsgBox>
-
-                        </MsgBox>
+                        <MsgBox>...</MsgBox>
                         <StyledButton onPress={handleSubmit}>
-                            <ButtonText>
-                                Login
-                            </ButtonText>
+                            <ButtonText>Login</ButtonText>
                         </StyledButton>
                         <Line/>
-                        <StyledButton onPress={handleSubmit}>
-                            <ButtonText>
-                                sign in with Google
-                            </ButtonText>
+                        <StyledButton google={true} onPress={handleSubmit}>
+                            <Fontisco name="google" color={primary} size={25}/>
+                         <ButtonText> google={true} sign in with Google</ButtonText>
                         </StyledButton>
+                        <ExtraView>
+                            <ExtraText>Don't have an account already?</ExtraText>
+                            <TextLink>
+                                <TextLinkContent>Signup</TextLinkContent>
+                            </TextLink>
+                        </ExtraView>
                     </StyledFormArea>)}  
                 </Formik>
             </InnerContainer>
