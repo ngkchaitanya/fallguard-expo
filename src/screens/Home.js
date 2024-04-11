@@ -4,9 +4,11 @@ import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-nativ
 // import { database } from '../firebaseConfig';
 import { FirebaseContext } from '../contexts/FirebaseContext';
 import { onValue, ref, set } from 'firebase/database';
+import { AuthContext } from '../contexts/AuthContext';
 
 export default function Home({ navigation }) {
     const { fbDB } = useContext(FirebaseContext);
+    const { logoutUser } = useContext(AuthContext);
 
     const [people, setPeople] = useState([]);
     const [textInp, setTextInp] = useState(null);
@@ -31,6 +33,10 @@ export default function Home({ navigation }) {
 
     const _openTracking = () => {
         navigation.navigate('Track')
+    }
+
+    const _removeUser = () => {
+        logoutUser();
     }
 
     useEffect(() => {
@@ -69,6 +75,9 @@ export default function Home({ navigation }) {
                 />
                 <TouchableOpacity onPress={_enterName} style={[styles.button, styles.marT10]}>
                     <Text style={styles.buttonText}>Enter Name</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.button, styles.marT10]} onPress={_removeUser}>
+                    <Text style={styles.buttonText}>Logout User</Text>
                 </TouchableOpacity>
             </View>
             <View>

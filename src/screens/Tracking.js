@@ -7,7 +7,7 @@ import { FirebaseContext } from '../contexts/FirebaseContext';
 import { get, push, ref, set, update } from '@firebase/database';
 import axios from 'axios';
 
-export default function Entry() {
+export default function Tracking() {
     const { fbDB } = useContext(FirebaseContext);
 
     const [location, setLocation] = useState(null);

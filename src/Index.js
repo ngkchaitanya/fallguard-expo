@@ -7,44 +7,45 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 // import { FirebaseContext } from './src/contexts/FirebaseContext';
 import Home from './screens/Home';
-import Entry from './screens/Entry';
 import FallDetection from './screens/FallDetection';
 import Tracking from './screens/Tracking';
 import { FirebaseContext } from './contexts/FirebaseContext';
 import { Text, View } from 'react-native';
+import AppLoading from './screens/AppLoading';
+import { AuthContext } from './contexts/AuthContext';
+import Entry from './screens/onboarding/Entry';
+import SignUp from './screens/onboarding/SignUp';
+import Login from './screens/onboarding/Login';
 
 const Stack = createNativeStackNavigator();
 
 export default function Index() {
     const { fbDB } = useContext(FirebaseContext);
+    const { user } = useContext(AuthContext);
     console.log("in index");
 
     return (
-        //   <NavigationContainer>
-        //     {fbDB ? (
-        //       <Stack.Navigator>
-        //         <Stack.Screen name="Home" component={Home} />
-        //         <Stack.Screen name="Entry" component={Entry} />
-        //         <Stack.Screen name="Fall" component={FallDetection} />
-        //       </Stack.Navigator>
-        //     ) : (
-        //       <Stack.Navigator>
-        //         <Stack.Screen name="Entry" component={Entry} />
-        //       </Stack.Navigator>
-        //     )}
-        //   </NavigationContainer>
         <>
             {fbDB ? (
                 <NavigationContainer>
-                    <Stack.Navigator>
-                        <Stack.Screen name="Home" component={Home} />
-                        <Stack.Screen name="Entry" component={Entry} />
-                        <Stack.Screen name="Fall" component={FallDetection} />
-                        <Stack.Screen name="Track" component={Tracking} />
-                    </Stack.Navigator>
+                    {user ? (
+                        <Stack.Navigator>
+                            <Stack.Screen name="Home" component={Home} />
+                            <Stack.Screen name="Fall" component={FallDetection} />
+                            <Stack.Screen name="Track" component={Tracking} />
+                        </Stack.Navigator>
+                    ) : (
+                        <Stack.Navigator>
+                            <Stack.Screen name="Entry" component={Entry} />
+                            <Stack.Screen name="SignUp" component={SignUp} />
+                            <Stack.Screen name="Login" component={Login} />
+
+                        </Stack.Navigator>
+                    )}
+
                 </NavigationContainer>
             ) : (
-                <Entry />
+                <AppLoading />
             )}
         </>
     );
