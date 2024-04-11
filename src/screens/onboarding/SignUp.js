@@ -34,19 +34,22 @@ export default function SignUp({ route, navigation }) {
                 console.log('Node exists:', snapshot.val());
                 // Retrieve users data
                 const usersData = snapshot.val();
-                for (const [key, item] of Object.entries(usersData)) {
-                    console.log('Key:', key);
-                    console.log('user:', item);
-                    // Check if user email matches
-                    if (item.email == userData.email) {
-                        console.log("matched!")
-                        // user exists
-                        // show error and ask to login
-                        setUserExists(true)
+                if (usersData) {
+                    for (const [key, item] of Object.entries(usersData)) {
+                        console.log('Key:', key);
+                        console.log('user:', item);
+                        // Check if user email matches
+                        if (item.email == userData.email) {
+                            console.log("matched!")
+                            // user exists
+                            // show error and ask to login
+                            setUserExists(true)
 
-                        return;
+                            return;
+                        }
                     }
                 }
+
             }
 
             console.log("Before push");

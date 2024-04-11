@@ -6,7 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // import Home from './src/screens/Home';
 
 // import { FirebaseContext } from './src/contexts/FirebaseContext';
-import Home from './screens/Home';
+// import Home from './screens/HomeTabs';
 import FallDetection from './screens/FallDetection';
 import Tracking from './screens/Tracking';
 import { FirebaseContext } from './contexts/FirebaseContext';
@@ -16,6 +16,7 @@ import { AuthContext } from './contexts/AuthContext';
 import Entry from './screens/onboarding/Entry';
 import SignUp from './screens/onboarding/SignUp';
 import Login from './screens/onboarding/Login';
+import HomeTabs from './screens/HomeTabs';
 
 const Stack = createNativeStackNavigator();
 
@@ -30,7 +31,7 @@ export default function Index() {
                 <NavigationContainer>
                     {user ? (
                         <Stack.Navigator>
-                            <Stack.Screen name="Home" component={Home} />
+                            <Stack.Screen name="HomeTabs" component={HomeTabs} options={{ headerShown: false }} />
                             <Stack.Screen name="Fall" component={FallDetection} />
                             <Stack.Screen name="Track" component={Tracking} />
                         </Stack.Navigator>
@@ -42,7 +43,6 @@ export default function Index() {
 
                         </Stack.Navigator>
                     )}
-
                 </NavigationContainer>
             ) : (
                 <AppLoading />

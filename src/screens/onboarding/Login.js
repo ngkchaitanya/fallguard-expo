@@ -31,25 +31,28 @@ export default function Login({ navigation }) {
                 console.log('Node exists:', snapshot.val());
                 // Retrieve users data
                 const usersData = snapshot.val();
-                for (const [key, item] of Object.entries(usersData)) {
-                    console.log('Key:', key);
-                    console.log('user:', item);
-                    // Check if user email matches
-                    if (item.email == userData.email) {
-                        console.log("matched!")
-                        if (item.password == userData.password) {
-                            // login user
-                            loginUser({
-                                ...item,
-                                id: key
-                            });
-                        } else {
-                            setPageError("Password doesn't match")
-                        }
+                if (userData) {
+                    for (const [key, item] of Object.entries(usersData)) {
+                        console.log('Key:', key);
+                        console.log('user:', item);
+                        // Check if user email matches
+                        if (item.email == userData.email) {
+                            console.log("matched!")
+                            if (item.password == userData.password) {
+                                // login user
+                                loginUser({
+                                    ...item,
+                                    id: key
+                                });
+                            } else {
+                                setPageError("Password doesn't match")
+                            }
 
-                        return;
+                            return;
+                        }
                     }
                 }
+
             }
 
             // user doesn't exist

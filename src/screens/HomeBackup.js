@@ -6,7 +6,7 @@ import { FirebaseContext } from '../contexts/FirebaseContext';
 import { onValue, ref, set } from 'firebase/database';
 import { AuthContext } from '../contexts/AuthContext';
 
-export default function Home({ navigation }) {
+export default function HomeBackup({ navigation }) {
     const { fbDB } = useContext(FirebaseContext);
     const { logoutUser } = useContext(AuthContext);
 
