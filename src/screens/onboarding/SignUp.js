@@ -62,7 +62,7 @@ export default function SignUp({ route, navigation }) {
             // update auth context
             loginUser({
                 ...userData,
-                id: newUserRef,
+                id: newUserKey,
             });
 
             // navigate to home
