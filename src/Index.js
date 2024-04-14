@@ -17,12 +17,15 @@ import Entry from './screens/onboarding/Entry';
 import SignUp from './screens/onboarding/SignUp';
 import Login from './screens/onboarding/Login';
 import HomeTabs from './screens/HomeTabs';
+import { FallContext } from './contexts/FallContext';
+import Severity from './screens/fall/Severity';
 
 const Stack = createNativeStackNavigator();
 
 export default function Index() {
     const { fbDB } = useContext(FirebaseContext);
     const { user } = useContext(AuthContext);
+    const { fallDetected } = useContext(FallContext);
     console.log("in index");
 
     return (
@@ -30,11 +33,17 @@ export default function Index() {
             {fbDB ? (
                 <NavigationContainer>
                     {user ? (
-                        <Stack.Navigator>
-                            <Stack.Screen name="HomeTabs" component={HomeTabs} options={{ headerShown: false }} />
-                            <Stack.Screen name="Fall" component={FallDetection} />
-                            <Stack.Screen name="Track" component={Tracking} />
-                        </Stack.Navigator>
+                        <>
+                            {fallDetected ? (
+                                <Stack.Navigator>
+                                    <Stack.Screen name="Severity" component={Severity} />
+                                </Stack.Navigator>
+                            ) : (
+                                <Stack.Navigator>
+                                    <Stack.Screen name="HomeTabs" component={HomeTabs} options={{ headerShown: false }} />
+                                </Stack.Navigator>
+                            )}
+                        </>
                     ) : (
                         <Stack.Navigator>
                             <Stack.Screen name="Entry" component={Entry} />

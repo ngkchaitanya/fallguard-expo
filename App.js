@@ -4,6 +4,7 @@ import Index from './src/Index';
 import { AuthProvider } from './src/contexts/AuthContext';
 import Toast, { BaseToast, ErrorToast, SuccessToast } from 'react-native-toast-message';
 import { StyleSheet } from 'react-native';
+import { FallProvider } from './src/contexts/FallContext';
 
 const toastConfig = {
   success: (props) => (
@@ -45,8 +46,10 @@ export default function App() {
   return (
     <FirebaseProvider>
       <AuthProvider>
-        <Index />
-        <Toast config={toastConfig} />
+        <FallProvider>
+          <Index />
+          <Toast config={toastConfig} />
+        </FallProvider>
       </AuthProvider>
     </FirebaseProvider>
   );
