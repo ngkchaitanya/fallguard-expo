@@ -17,6 +17,7 @@ import Entry from './screens/onboarding/Entry';
 import SignUp from './screens/onboarding/SignUp';
 import Login from './screens/onboarding/Login';
 import HomeTabs from './screens/HomeTabs';
+import LandingScreen from './screens/LandingScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -37,9 +38,10 @@ export default function Index() {
                         </Stack.Navigator>
                     ) : (
                         <Stack.Navigator>
-                            <Stack.Screen name="Entry" component={Entry} />
-                            <Stack.Screen name="SignUp" component={SignUp} />
-                            <Stack.Screen name="Login" component={Login} />
+                             <Stack.Screen name="Landing" component={LandingScreen} options={{ headerShown: false }} />
+                            <Stack.Screen name="Entry" component={Entry} options={{ headerShown: false }}/>
+                            <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }}/>
+                            <Stack.Screen name="Login" component={Login} options={{ headerShown: false }}/>
 
                         </Stack.Navigator>
                     )}
