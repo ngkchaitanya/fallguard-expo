@@ -2,6 +2,7 @@ import React, { createContext, useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Accelerometer, Gyroscope } from 'expo-sensors';
 import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const FallContext = createContext();
 
@@ -19,6 +20,7 @@ export const FallProvider = ({ children }) => {
     const [fallDetected, setFallDetected] = useState(false);
     const [accSubscription, setAccSubscription] = useState(null);
     const [gyroSubscription, setGyroSubscription] = useState(null);
+    const [currentFallId, setCurrentFallId] = useState(null);
 
     const _slow = () => {
         Accelerometer.setUpdateInterval(1000)
@@ -83,7 +85,27 @@ export const FallProvider = ({ children }) => {
     }
 
     const _localFallDetect = () => {
+        _unsubscribe();
         setFallDetected(true);
+    }
+
+    const storeFall = async (fallId) => {
+        try {
+            await AsyncStorage.setItem('fall-id', fallId);
+        } catch (e) {
+            // saving error
+            console.error("Error while trying to store fall-id: ", e);
+        }
+    }
+
+    const removeFall = async () => {
+        try {
+            await AsyncStorage.removeItem('fall-id')
+
+            setCurrentFallId(null);
+        } catch (error) {
+            console.error("Error while trying to remove fall-id: ", error);
+        }
     }
 
     useEffect(() => {
@@ -91,6 +113,25 @@ export const FallProvider = ({ children }) => {
         // _subscribe();
         return () => _unsubscribe();
     }, []);
+
+    useEffect(() => {
+        // @TODO: check for any existing falls
+        const getData = async () => {
+            try {
+                const value = await AsyncStorage.getItem('fall-id');
+                console.log("get fall-id value: ", value)
+                if (value !== null) {
+                    // value previously stored
+                    setCurrentFallId(value);
+                }
+            } catch (e) {
+                // error reading value
+                console.error("Error while trying to get stored fall-id: ", e);
+            }
+        };
+
+        getData();
+    }, [])
 
     useEffect(() => {
         if (!fallDetected) {
@@ -103,8 +144,8 @@ export const FallProvider = ({ children }) => {
                 if (orientationChange > orientationThreshold) {
                     // fallDetected = true;
                     console.log('@@@ Fall detected!');
-                    setFallDetected(true);
                     _unsubscribe();
+                    setFallDetected(true);
 
                     Toast.show({
                         type: 'error',
@@ -116,16 +157,16 @@ export const FallProvider = ({ children }) => {
     }, [accData, gyroData, fallDetected])
 
     return (
-        <FallContext.Provider value={{ fallDetected, resetFallDetection }}>
+        <FallContext.Provider value={{ fallDetected, accData, gyroData, currentFallId, resetFallDetection, storeFall, removeFall }}>
             <View style={styles.container}>
                 <Text style={styles.text}>Accelerometer:</Text>
                 <Text style={styles.text}>x: {accData.x}</Text>
-                <Text style={styles.text}>y: {accData.y}</Text>
-                <Text style={styles.text}>z: {accData.z}</Text>
+                {/* <Text style={styles.text}>y: {accData.y}</Text>
+                <Text style={styles.text}>z: {accData.z}</Text> */}
                 <Text style={styles.text}>Gyroscope:</Text>
                 <Text style={styles.text}>x: {gyroData.x}</Text>
-                <Text style={styles.text}>y: {gyroData.y}</Text>
-                <Text style={styles.text}>z: {gyroData.z}</Text>
+                {/* <Text style={styles.text}>y: {gyroData.y}</Text>
+                <Text style={styles.text}>z: {gyroData.z}</Text> */}
             </View>
             <TouchableOpacity style={styles.button} onPress={_localFallDetect}>
                 <Text style={styles.buttonText}>Detect Fall</Text>

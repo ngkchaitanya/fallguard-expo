@@ -19,13 +19,16 @@ import Login from './screens/onboarding/Login';
 import HomeTabs from './screens/HomeTabs';
 import { FallContext } from './contexts/FallContext';
 import Severity from './screens/fall/Severity';
+import Track from './screens/fall/Track';
+import ExistingTrack from './screens/fall/ExistingTrack';
+import NewTrack from './screens/fall/NewTrack';
 
 const Stack = createNativeStackNavigator();
 
 export default function Index() {
     const { fbDB } = useContext(FirebaseContext);
     const { user } = useContext(AuthContext);
-    const { fallDetected } = useContext(FallContext);
+    const { fallDetected, currentFallId } = useContext(FallContext);
     console.log("in index");
 
     return (
@@ -34,9 +37,16 @@ export default function Index() {
                 <NavigationContainer>
                     {user ? (
                         <>
-                            {fallDetected ? (
+                            {currentFallId ? (
+                                <Stack.Navigator >
+                                    <Stack.Screen name="Track" component={Track} />
+                                </Stack.Navigator>
+                            ) : fallDetected ? (
                                 <Stack.Navigator>
                                     <Stack.Screen name="Severity" component={Severity} />
+                                    {/* <Stack.Screen name="ExistingTrack" component={ExistingTrack} />
+                                                <Stack.Screen name="NewTrack" component={NewTrack} /> */}
+                                    <Stack.Screen name="Track" component={Track} />
                                 </Stack.Navigator>
                             ) : (
                                 <Stack.Navigator>
@@ -52,10 +62,11 @@ export default function Index() {
 
                         </Stack.Navigator>
                     )}
-                </NavigationContainer>
+                </NavigationContainer >
             ) : (
                 <AppLoading />
-            )}
+            )
+            }
         </>
     );
 }
