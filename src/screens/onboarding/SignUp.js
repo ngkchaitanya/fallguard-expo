@@ -1,10 +1,12 @@
 import React, { useContext, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeA, TouchableOpacityreaView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet,Image } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { FirebaseContext } from '../../contexts/FirebaseContext';
 import { get, push, ref } from 'firebase/database';
 import { globalStyles } from '../../css/Global';
 import { AuthContext } from '../../contexts/AuthContext';
+import theme from '../../css/theme';
+import logo from '../../../assets/fallguardlogo.png';
 
 export default function SignUp({ route, navigation }) {
     const { userType } = route.params;
@@ -17,7 +19,6 @@ export default function SignUp({ route, navigation }) {
     const [userExists, setUserExists] = useState(false)
 
     const _onSubmit = async (data) => {
-        console.log(data); // You can replace this with your signup logic
         setUserExists(false);
         const usersRef = ref(fbDB, 'user');
         var userData = {
@@ -26,61 +27,37 @@ export default function SignUp({ route, navigation }) {
             isVolunteer: userType && userType == 'volunteer' ? true : false,
             createdAt: new Date().getTime(),
         }
-        // check if an account already exists with the email
         try {
             const snapshot = await get(usersRef);
-            console.log("snapshot: ", snapshot)
             if (snapshot.exists()) {
-                console.log('Node exists:', snapshot.val());
-                // Retrieve users data
                 const usersData = snapshot.val();
                 if (usersData) {
                     for (const [key, item] of Object.entries(usersData)) {
-                        console.log('Key:', key);
-                        console.log('user:', item);
-                        // Check if user email matches
                         if (item.email == userData.email) {
-                            console.log("matched!")
-                            // user exists
-                            // show error and ask to login
                             setUserExists(true)
-
                             return;
                         }
                     }
                 }
-
             }
-
-            console.log("Before push");
-            // If user not found, add it to the database
             const newUserRef = await push(usersRef, userData);
-            const newUserKey = newUserRef.key;
-            console.log("new User: ", newUserKey);
-            console.log('Node created successfully!');
-
-            // update auth context
             loginUser({
                 ...userData,
                 id: newUserKey,
             });
-
-            // navigate to home
-            // adding to auth context, automatically navigates to home
         } catch (error) {
             console.error('Error:', error);
         }
     };
 
     const _handleLogin = () => {
-        navigation.navigate('Login', {
-            // userType: type,
-        });
+        navigation.navigate('Login');
     }
 
     return (
         <View style={styles.container}>
-            <Text>Signup</Text>
+             {/* <Image source={logo} style={styles.logo} resizeMode="contain" /> */}
+            <Text style={styles.title}>Create Account</Text>
             <Controller
                 control={control}
                 render={({ field: { onChange, onBlur, value } }) => (
@@ -99,6 +76,7 @@ export default function SignUp({ route, navigation }) {
             />
             {errors.firstName && <Text style={styles.errorText}>{errors.firstName.message}</Text>}
 
+            {/* Middle Name */}
             <Controller
                 control={control}
                 render={({ field: { onChange, onBlur, value } }) => (
@@ -111,10 +89,9 @@ export default function SignUp({ route, navigation }) {
                     />
                 )}
                 name="middleName"
-                rules={{}}
             />
-            {/* {errors.middleName && <Text style={styles.errorText}>{errors.middleName.message}</Text>} */}
 
+            {/* Last Name */}
             <Controller
                 control={control}
                 render={({ field: { onChange, onBlur, value } }) => (
@@ -133,6 +110,7 @@ export default function SignUp({ route, navigation }) {
             />
             {errors.lastName && <Text style={styles.errorText}>{errors.lastName.message}</Text>}
 
+            {/* Email */}
             <Controller
                 control={control}
                 render={({ field: { onChange, onBlur, value } }) => (
@@ -152,6 +130,7 @@ export default function SignUp({ route, navigation }) {
             />
             {errors.email && <Text style={styles.errorText}>{errors.email.message}</Text>}
 
+            {/* Phone */}
             <Controller
                 control={control}
                 render={({ field: { onChange, onBlur, value } }) => (
@@ -175,6 +154,7 @@ export default function SignUp({ route, navigation }) {
             />
             {errors.phone && <Text style={styles.errorText}>{errors.phone.message}</Text>}
 
+            {/* Password */}
             <Controller
                 control={control}
                 render={({ field: { onChange, onBlur, value } }) => (
@@ -198,6 +178,7 @@ export default function SignUp({ route, navigation }) {
             />
             {errors.password && <Text style={styles.errorText}>{errors.password.message}</Text>}
 
+            {/* Confirm Password */}
             <Controller
                 control={control}
                 render={({ field: { onChange, onBlur, value } }) => (
@@ -218,8 +199,8 @@ export default function SignUp({ route, navigation }) {
             />
             {errors.confirmPassword && <Text style={styles.errorText}>{errors.confirmPassword.message}</Text>}
 
-            <TouchableOpacity style={styles.signUpBtn} onPress={handleSubmit(_onSubmit)} >
-                <Text style={styles.signUpBtnText}>Signup</Text>
+            <TouchableOpacity style={styles.button} onPress={handleSubmit(_onSubmit)} >
+                <Text style={styles.buttonText}>Signup</Text>
             </TouchableOpacity>
 
             {userExists && (
@@ -229,7 +210,9 @@ export default function SignUp({ route, navigation }) {
             )}
             <View style={styles.loginContainer}>
                 <Text>Already registered? </Text>
-                <Text onPress={_handleLogin} style={styles.loginBtnText}>Login</Text>
+                <TouchableOpacity onPress={_handleLogin}>
+                    <Text style={styles.loginBtnText}>Login</Text>
+                </TouchableOpacity>
             </View>
         </View>
     );
@@ -241,54 +224,61 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         padding: 16,
-        backgroundColor: 'yellow'
+        backgroundColor: theme.colors.secondary,
+    },
+    logo: {
+        flex: 1,
+        resizeMode: 'cover',
+        justifyContent: 'center',
+      },
+    title: {
+        fontSize: 24,
+        marginBottom: 20,
+        color: theme.colors.text,
     },
     input: {
         height: 40,
-        borderColor: 'gray',
+        borderColor: theme.colors.border,
         borderWidth: 1,
         marginBottom: 10,
-        padding: 8,
-        width: '100%'
+        paddingHorizontal: 10,
+        width: '100%',
+        backgroundColor:'#FFFFFF',
     },
     errorText: {
-        color: 'red',
+        color: theme.colors.error,
         marginBottom: 10,
         textAlign: 'left',
-        width: '100%'
+        width: '100%',
     },
     loginContainer: {
-        display: 'flex',
-        // backgroundColor: 'blue',
-        width: '100%',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 20
+        marginTop: 20,
     },
     loginBtnText: {
-        textDecorationStyle: 'solid',
-        color: 'blue',
-        textDecorationLine: 'underline'
+        color: theme.colors.primary,
+        textDecorationLine: 'underline',
     },
-    signUpBtn: {
+    button: {
         height: 40,
         width: 150,
-        backgroundColor: 'blue',
+        backgroundColor: theme.colors.primary,
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 20
+        marginTop: 20,
+        borderRadius: 5,
     },
-    signUpBtnText: {
-        color: '#FFF'
+    buttonText: {
+        color: theme.colors.buttonText,
     },
     userExistsContainer: {
-        // backgroundColor: 'green',
         marginTop: 20,
     },
     userExistsText: {
-        fontSize: 20,
-        color: 'red',
-        textAlign: 'center'
-    }
+        fontSize: 16,
+        color: theme.colors.error,
+        textAlign: 'center',
+    },
 });

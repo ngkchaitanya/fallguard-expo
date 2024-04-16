@@ -22,6 +22,7 @@ import Severity from './screens/fall/Severity';
 import Track from './screens/fall/Track';
 import ExistingTrack from './screens/fall/ExistingTrack';
 import NewTrack from './screens/fall/NewTrack';
+import LandingScreen from './screens/LandingScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -56,9 +57,10 @@ export default function Index() {
                         </>
                     ) : (
                         <Stack.Navigator>
-                            <Stack.Screen name="Entry" component={Entry} />
-                            <Stack.Screen name="SignUp" component={SignUp} />
-                            <Stack.Screen name="Login" component={Login} />
+                             <Stack.Screen name="Landing" component={LandingScreen} options={{ headerShown: false }} />
+                            <Stack.Screen name="Entry" component={Entry} options={{ headerShown: false }}/>
+                            <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }}/>
+                            <Stack.Screen name="Login" component={Login} options={{ headerShown: false }}/>
 
                         </Stack.Navigator>
                     )}
