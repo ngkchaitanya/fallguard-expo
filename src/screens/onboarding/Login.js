@@ -19,6 +19,8 @@ export default function Login({ navigation }) {
     console.log(data);
     setPageError("");
 
+    data.email = data.email.toLowerCase();
+
     const usersRef = ref(fbDB, 'user');
     var userData = {
       ...data

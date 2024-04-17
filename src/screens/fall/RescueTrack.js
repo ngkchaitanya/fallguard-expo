@@ -1,26 +1,28 @@
-import { get, ref } from "firebase/database";
+import { get, onValue, ref } from "firebase/database";
 import React, { useContext, useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { Button, Text, View } from "react-native";
 import { FirebaseContext } from "../../contexts/FirebaseContext";
-import { getDistanceAndETA, getLocationAddress } from "../../util/ETA";
+import { getDistanceAndETA, getLocationAddress, getDistAndETABetweenUsers } from "../../util/ETA";
 import { Card } from "react-native-paper";
+import { AuthContext } from "../../contexts/AuthContext";
 
 export default function RescueTrack({ route }) {
-    const { fallResId, isVolunteer, isFamily } = route.params ? route.params : { fallResId: null, isVolunteer: true, isFamily: false };
+    const { fallResId, fallId, isVolunteer, isFamily } = route.params ? route.params : { fallResId: null, fallId: null, isVolunteer: true, isFamily: false };
 
+    const { user, logoutUser } = useContext(AuthContext);
     const { fbDB } = useContext(FirebaseContext);
 
     const [fallResData, setFallResData] = useState();
+    const [addVolFallResData, setAddVolFallResData] = useState();
     const [fallData, setFallData] = useState();
 
     const [distance, setDistance] = useState();
     const [duration, setDuration] = useState();
     const [address, setAddress] = useState();
 
-    const [distance1, setDistance1] = useState();
-    const [duration1, setDuration1] = useState();
-    const [address1, setAddress1] = useState();
-
+    const [addVolDistance, setAddVolDistance] = useState();
+    const [addVolDuration, setAddVolDuration] = useState();
+    const [addVolAddress, setAddVolAddress] = useState();
 
     useEffect(() => {
         const fetchFallResData = async (localFallResId) => {
@@ -73,6 +75,70 @@ export default function RescueTrack({ route }) {
         fetchFallResData(fallResId)
     }, [])
 
+    useEffect(() => {
+        // check to see if any volunteer is also rescuing
+        if (isFamily) {
+            const fallResponsesRef = ref(fbDB, 'fall_response');
+            try {
+                onValue(fallResponsesRef, (snapshot) => {
+                    var allFallResponses = snapshot.val();
+                    console.log("res track - allFallResponses: ", allFallResponses)
+                    if (allFallResponses) {
+                        for (const [key, item] of Object.entries(allFallResponses)) {
+                            // console.log("res track - fallId: ", fallId)
+                            // console.log("res track - item.fallId: ", item.fallId)
+                            // console.log("res track - fallResId: ", fallResId)
+                            // console.log("res track - key: ", key)
+                            // console.log("res track - isVolunteer: ", key)
+                            if (item.fallId == fallId &&
+                                key != fallResId &&
+                                "volunteerId" in item && item.volunteerId) {
+                                // additional volunteer rescue
+                                console.log("Add vol fall res exists")
+                                setAddVolFallResData({
+                                    ...item,
+                                    id: key
+                                })
+
+                                break
+                            }
+                        }
+                    }
+                })
+            } catch (error) {
+                console.error("Error: ", error)
+            }
+        }
+    }, [])
+
+    useEffect(() => {
+        const fetchAddVolFallResETA = async (addVolFallResData, fallData) => {
+            var eta = await getDistAndETABetweenUsers(
+                addVolFallResData.rescueDeviceLat,
+                addVolFallResData.rescueDeviceLong,
+                fallData.deviceLat,
+                fallData.deviceLong,
+            )
+
+            console.log("add vol eta: ", eta);
+
+            var geoLocation = await getLocationAddress(
+                addVolFallResData.rescueDeviceLat,
+                addVolFallResData.rescueDeviceLong,
+            )
+
+            console.log("add vol geoLocation: ", geoLocation);
+
+            setAddVolAddress(geoLocation.address)
+            setAddVolDistance(eta.distance)
+            setAddVolDuration(eta.duration)
+        }
+
+        if (addVolFallResData && fallData) {
+            fetchAddVolFallResETA(addVolFallResData, fallData)
+        }
+    }, [addVolFallResData, fallData])
+
     return (
         <View>
             <Text>Rescue Fall Track: {fallResId}</Text>
@@ -84,18 +150,36 @@ export default function RescueTrack({ route }) {
             )}
             {fallResData && (
                 <Card>
-                    <Text>Victim Details: </Text>
-                    {fallResData.victim && (
+                    <Text>{isFamily ? "Your dear one's details: " : "Victim Details:"} </Text>
+                    {fallData && fallData.victim && (
                         <View>
-                            <Text>Victim Name: {fallResData.victim.firstName} {fallResData.victim.lastName}</Text>
-                            <Text>Victim Email: {fallResData.victim.email}</Text>
+                            <Text>Victim Name: {fallData.victim.firstName} {fallData.victim.lastName}</Text>
+                            <Text>Victim Email: {fallData.victim.email}</Text>
                         </View>
                     )}
                     <Text>Victim Location: {address}</Text>
                     <Text>ETA Distance: {distance}</Text>
-                    <Text>ETA Duration: {duration}</Text>
+                    <Text>ETA TIme: {duration}</Text>
                 </Card>
             )}
+
+            {addVolFallResData && isFamily && (
+                <Card>
+                    <Text>A volunteer is also trying to rescue your dear one!</Text>
+                    {addVolFallResData.volunteer && (
+                        <View>
+                            <Text>Volunteer Name: {addVolFallResData.volunteer.firstName} {addVolFallResData.volunteer.lastName}</Text>
+                            <Text>Volunteer Email: {addVolFallResData.volunteer.email}</Text>
+                        </View>
+                    )}
+                    <Text>Volunteer Location: {addVolAddress}</Text>
+                    <Text>Volunteer ETA Distance to Dear One: {addVolDistance}</Text>
+                    <Text>Volunteer ETA TIme to Dear One: {addVolDuration}</Text>
+                </Card>
+            )}
+
+            <Button title="Logout" onPress={logoutUser}>
+            </Button>
         </View>
     )
 }

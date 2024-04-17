@@ -71,6 +71,7 @@ export default function Home({ navigation }) {
 
             navigation.replace('RescueTrack', {
                 fallResId: newFallResId,
+                fallId: liveFall.id,
                 isVolunteer: false,
                 isFamily: true
             });
@@ -103,6 +104,7 @@ export default function Home({ navigation }) {
 
             navigation.replace('RescueTrack', {
                 fallResId: newFallResId,
+                fallId: liveFall.id,
                 isVolunteer: true,
                 isFamily: false
             });
@@ -158,6 +160,7 @@ export default function Home({ navigation }) {
                                     if (usersFamilySnapshot.exists) {
                                         const usersFamilyData = usersFamilySnapshot.val();
                                         if (usersFamilyData) {
+                                            console.log("usersFamilyData: ", usersFamilyData)
                                             for (const [key, item] of Object.entries(usersFamilyData)) {
                                                 if ("acceptedAt" in item && item.acceptedAt) {
                                                     console.log("family member item: ", item)
@@ -203,6 +206,7 @@ export default function Home({ navigation }) {
                                                         ...familyFell
                                                     }
                                                 }
+                                                console.log("home family - localLiveFall: ", localLiveFall)
                                                 setLiveFall(localLiveFall);
 
                                                 // sound alarm
@@ -258,6 +262,7 @@ export default function Home({ navigation }) {
                                                             ...usersData[fallItem.victimId]
                                                         }
                                                     }
+                                                    console.log("home volunteer - localLiveFall: ", localLiveFall)
                                                     setLiveFall(localLiveFall);
 
                                                     break;
@@ -351,18 +356,20 @@ export default function Home({ navigation }) {
                         <Text>Address: {address}</Text>
                     )}
 
-                    {"isFamily" in liveFall && liveFall.isFamily ? (
-                        <Button mode="contained" onPress={_familyAck}>
-                            I Acknowledge
-                        </Button>
-                    ) : (
-                        <View style={styles.ctaContainer}>
-                            <Button mode="contained" icon="check" onPress={_volunteerAccept}>Accept</Button>
-                            <Button style={globalStyles.marT10} mode="outlined" icon="close" onPress={_volunteerReject}>Reject</Button>
-                        </View>
-                    )}
-
-
+                    {userLat && userLat ? (
+                        <>
+                            {"isFamily" in liveFall && liveFall.isFamily ? (
+                                <Button mode="contained" onPress={_familyAck}>
+                                    I Acknowledge
+                                </Button>
+                            ) : (
+                                <View style={styles.ctaContainer}>
+                                    <Button mode="contained" icon="check" onPress={_volunteerAccept}>Accept</Button>
+                                    <Button style={globalStyles.marT10} mode="outlined" icon="close" onPress={_volunteerReject}>Reject</Button>
+                                </View>
+                            )}
+                        </>
+                    ) : (<Text>Loading</Text>)}
                 </Card>
             )}
 
