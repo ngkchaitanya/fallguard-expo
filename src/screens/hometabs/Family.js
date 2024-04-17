@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { StyleSheet, Text, View, ScrollView, ListView} from "react-native";
+import { StyleSheet, Text, View, ScrollView, ListView } from "react-native";
 import { FirebaseContext } from "../../contexts/FirebaseContext";
 import { AuthContext } from "../../contexts/AuthContext";
 import { get, onValue, push, ref, update } from "firebase/database";
@@ -388,13 +388,13 @@ export default function Family() {
     return (
         <View style={styles.container}>
             <ScrollView>
-            {/* <ListView> */}
-            <View style={styles.familySections}>
-                {userSentRequests.length>0 && (<UserSentRequests sentRequests={userSentRequests} sendRequest={_sendRequest} />)}
-                {requestsToUser.length > 0 && (<UserReceivedRequests receivedRequests={requestsToUser} accpetRequest={_accpetRequest} rejectRequest={_rejectRequest} />)}
-                { (userSentFamily.length >0 || userReceivedFamily.length>0) && (<UserFamily userSentFamily={userSentFamily} userReceivedFamily={userReceivedFamily} />)}
-            </View>
-            {/* </ListView> */}
+                {/* <ListView> */}
+                <View style={styles.familySections}>
+                    {userSentRequests.length > 0 && (<UserSentRequests sentRequests={userSentRequests} sendRequest={_sendRequest} />)}
+                    {requestsToUser.length > 0 && (<UserReceivedRequests receivedRequests={requestsToUser} accpetRequest={_accpetRequest} rejectRequest={_rejectRequest} />)}
+                    {(userSentFamily.length > 0 || userReceivedFamily.length > 0) && (<UserFamily userSentFamily={userSentFamily} userReceivedFamily={userReceivedFamily} />)}
+                </View>
+                {/* </ListView> */}
             </ScrollView>
         </View>
     )
