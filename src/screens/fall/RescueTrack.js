@@ -1,12 +1,12 @@
-import { get, onValue, ref } from "firebase/database";
+import { get, onValue, ref, update } from "firebase/database";
 import React, { useContext, useEffect, useState } from "react";
-import { Button, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { FirebaseContext } from "../../contexts/FirebaseContext";
 import { getDistanceAndETA, getLocationAddress, getDistAndETABetweenUsers } from "../../util/ETA";
-import { Card } from "react-native-paper";
+import { Button, Card } from "react-native-paper";
 import { AuthContext } from "../../contexts/AuthContext";
 
-export default function RescueTrack({ route }) {
+export default function RescueTrack({ route, navigation }) {
     const { fallResId, fallId, isVolunteer, isFamily } = route.params ? route.params : { fallResId: null, fallId: null, isVolunteer: true, isFamily: false };
 
     const { user, logoutUser } = useContext(AuthContext);
@@ -23,6 +23,37 @@ export default function RescueTrack({ route }) {
     const [addVolDistance, setAddVolDistance] = useState();
     const [addVolDuration, setAddVolDuration] = useState();
     const [addVolAddress, setAddVolAddress] = useState();
+
+    const [victimRescued, setVictimRescued] = useState(false);
+
+    const _reachVictim = async () => {
+        try {
+            // update fall res
+            const fallResLocationPath = `fall_response/${fallResId}/`;
+
+            const fallResUpdates = {};
+            fallResUpdates[fallResLocationPath + '/reachedAt'] = new Date().getTime();
+
+            await update(ref(fbDB), fallResUpdates);
+
+            // update fall
+            const fallLocationPath = `fall/${fallId}/`;
+
+            const fallUpdates = {};
+            fallUpdates[fallLocationPath + '/resolvedAt'] = new Date().getTime();
+
+            await update(ref(fbDB), fallUpdates);
+
+            setVictimRescued(true);
+        } catch (error) {
+            console.error("Error: ", error)
+        }
+    }
+
+    const _rescueAck = () => {
+        navigation.replace('HomeTabs', {
+        });
+    }
 
     useEffect(() => {
         const fetchFallResData = async (localFallResId) => {
@@ -139,47 +170,89 @@ export default function RescueTrack({ route }) {
         }
     }, [addVolFallResData, fallData])
 
+    useEffect(() => {
+        // check for fall live changes to rescue
+        const fallRef = ref(fbDB, 'fall/' + fallId);
+        try {
+            onValue(fallRef, (snapshot) => {
+                var fallData = snapshot.val();
+                if (fallData && "resolvedAt" in fallData && fallData.resolvedAt) {
+                    // victim has been successfully rescued
+                    setVictimRescued(true)
+                }
+            })
+        } catch (error) {
+            console.error("Error: ", error)
+        }
+    }, [])
+
     return (
         <View>
-            <Text>Rescue Fall Track: {fallResId}</Text>
-            {isVolunteer && (
-                <Text>isVolunteer: True</Text>
-            )}
-            {isFamily && (
-                <Text>isFamily: True</Text>
-            )}
-            {fallResData && (
-                <Card>
-                    <Text>{isFamily ? "Your dear one's details: " : "Victim Details:"} </Text>
-                    {fallData && fallData.victim && (
-                        <View>
-                            <Text>Victim Name: {fallData.victim.firstName} {fallData.victim.lastName}</Text>
-                            <Text>Victim Email: {fallData.victim.email}</Text>
-                        </View>
-                    )}
-                    <Text>Victim Location: {address}</Text>
-                    <Text>ETA Distance: {distance}</Text>
-                    <Text>ETA TIme: {duration}</Text>
-                </Card>
-            )}
+            {victimRescued ? (
+                <View>
+                    <Text>Rescue Successful!</Text>
+                    <Text>Icon goes here</Text>
+                    <Button mode="contained" icon="check" onPress={_rescueAck}>
+                        Got It
+                    </Button>
+                </View>
+            ) : (
 
-            {addVolFallResData && isFamily && (
-                <Card>
-                    <Text>A volunteer is also trying to rescue your dear one!</Text>
-                    {addVolFallResData.volunteer && (
-                        <View>
-                            <Text>Volunteer Name: {addVolFallResData.volunteer.firstName} {addVolFallResData.volunteer.lastName}</Text>
-                            <Text>Volunteer Email: {addVolFallResData.volunteer.email}</Text>
-                        </View>
-                    )}
-                    <Text>Volunteer Location: {addVolAddress}</Text>
-                    <Text>Volunteer ETA Distance to Dear One: {addVolDistance}</Text>
-                    <Text>Volunteer ETA TIme to Dear One: {addVolDuration}</Text>
-                </Card>
-            )}
+                <View>
+                    <Text>Rescue Fall Track: {fallResId}</Text>
+                    {
+                        isVolunteer && (
+                            <Text>isVolunteer: True</Text>
+                        )
+                    }
+                    {
+                        isFamily && (
+                            <Text>isFamily: True</Text>
+                        )
+                    }
+                    {
+                        fallResData && (
+                            <Card>
+                                <Text>{isFamily ? "Your dear one's details: " : "Victim Details:"} </Text>
+                                {fallData && fallData.victim && (
+                                    <View>
+                                        <Text>Victim Name: {fallData.victim.firstName} {fallData.victim.lastName}</Text>
+                                        <Text>Victim Email: {fallData.victim.email}</Text>
+                                    </View>
+                                )}
+                                <Text>Victim Location: {address}</Text>
+                                <Text>ETA Distance: {distance}</Text>
+                                <Text>ETA TIme: {duration}</Text>
+                            </Card>
+                        )
+                    }
 
-            <Button title="Logout" onPress={logoutUser}>
-            </Button>
-        </View>
+                    {
+                        addVolFallResData && isFamily && (
+                            <Card>
+                                <Text>A volunteer is also trying to rescue your dear one!</Text>
+                                {addVolFallResData.volunteer && (
+                                    <View>
+                                        <Text>Volunteer Name: {addVolFallResData.volunteer.firstName} {addVolFallResData.volunteer.lastName}</Text>
+                                        <Text>Volunteer Email: {addVolFallResData.volunteer.email}</Text>
+                                    </View>
+                                )}
+                                <Text>Volunteer Location: {addVolAddress}</Text>
+                                <Text>Volunteer ETA Distance to Dear One: {addVolDistance}</Text>
+                                <Text>Volunteer ETA TIme to Dear One: {addVolDuration}</Text>
+                            </Card>
+                        )
+                    }
+
+                    <Button mode="contained" onPress={_reachVictim}>
+                        {isFamily ? "Reached Dear One" : "Reached Victim"}
+                    </Button>
+                    {/* <Button title="Logout" onPress={logoutUser}>
+            </Button> */}
+                </View >
+            )
+            }
+
+        </View >
     )
 }
