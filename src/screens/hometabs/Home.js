@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View,Image } from "react-native";
 import { AuthContext } from "../../contexts/AuthContext";
 import { FirebaseContext } from "../../contexts/FirebaseContext";
 import { FallContext } from "../../contexts/FallContext";
@@ -8,6 +8,7 @@ import { Audio } from 'expo-av';
 import { Button, Card } from "react-native-paper";
 import { globalStyles } from "../../css/Global";
 import { getDistanceAndETA, getLocationAddress } from "../../util/ETA";
+import theme from "../../css/theme";
 
 // import {  }
 
@@ -311,19 +312,18 @@ export default function Home({ navigation }) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Home</Text>
+            {/* <Text style={styles.text}>Home</Text> */}
+            {liveFall ?(
+                <View style={styles.container}>
+            <Text style={[styles.caption, , { fontWeight: 'bold' }]}>FALLGUARD</Text>
+            <Text style={styles.caption}>Peace of mind in every step!</Text>
+            <Image source={require('../../../assets/home.png')} style={styles.image} resizeMode="cover" />
+            </View>):
 
-            {user && user.isVolunteer && (
-                <View>
-                    <Text>Volunteer stuff</Text>
-                </View>
-            )}
+            
 
-            <TouchableOpacity style={styles.button} onPress={_resetFall}>
-                <Text style={styles.buttonText}>Reset Fall Detection</Text>
-            </TouchableOpacity>
-
-            {liveFall && (
+            (<View style={styles.container}>
+                {liveFall && (
                 <Card style={globalStyles.marT20}>
                     {"isFamily" in liveFall && liveFall.isFamily ? (
                         <Text>Your fear one fell!!</Text>
@@ -364,7 +364,8 @@ export default function Home({ navigation }) {
 
 
                 </Card>
-            )}
+               
+            )} </View>)}
 
         </View>
     )
@@ -375,6 +376,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         paddingHorizontal: 10,
+        backgroundColor: '#FFFFFF'
     },
     text: {
         textAlign: 'center',
@@ -412,5 +414,17 @@ const styles = StyleSheet.create({
     },
     ctaContainer: {
         backgroundColor: 'green'
-    }
+    },
+    caption: {
+        textAlign: 'center',
+        fontSize: 20,
+        marginBottom: 10,
+        color: theme.colors.primary
+    },
+    image: {
+        flex: 0.8,
+        marginTop: 100,
+        width: '100%',
+        height: '100%',
+    },
 });
