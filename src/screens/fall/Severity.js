@@ -25,6 +25,7 @@ export default function Severity({ navigation }) {
     // const [timeUp, setTimeUp] = useState(false);
     const [fallData, setFallData] = useState({
         victimId: user.id,
+        victim: user,
         deviceName: Device.deviceName,
         deviceBrand: Device.brand,
         deviceModelId: Device.modelId,

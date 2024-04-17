@@ -1,8 +1,8 @@
-import { ref } from "firebase/database";
+import { get, ref } from "firebase/database";
 import React, { useContext, useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { FirebaseContext } from "../../contexts/FirebaseContext";
-import { getDistanceAndETA } from "../../util/ETA";
+import { getDistanceAndETA, getLocationAddress } from "../../util/ETA";
 import { Card } from "react-native-paper";
 
 export default function RescueTrack({ route }) {
@@ -15,9 +15,11 @@ export default function RescueTrack({ route }) {
 
     const [distance, setDistance] = useState();
     const [duration, setDuration] = useState();
+    const [address, setAddress] = useState();
 
     const [distance1, setDistance1] = useState();
     const [duration1, setDuration1] = useState();
+    const [address1, setAddress1] = useState();
 
 
     useEffect(() => {
@@ -41,19 +43,24 @@ export default function RescueTrack({ route }) {
                         const fallSnapshot = await get(fallRef)
                         if (fallSnapshot.exists()) {
                             console.log("fall snapshot: ", fallSnapshot.val())
-                            const snapshotFallData = snapshot.val();
+                            const snapshotFallData = fallSnapshot.val();
                             if (snapshotFallData) {
                                 setFallData({
                                     ...snapshotFallData,
                                     id: snapshotFallResData.fallId
                                 })
-
-                                eta = await getDistanceAndETA(snapshotFallData.deviceLat, snapshotFallData.deviceLong)
+                                console.log("After setting fall data")
+                                console.log("deviceLat: ", snapshotFallData.deviceLat)
+                                console.log("deviceLong: ", snapshotFallData.deviceLong)
+                                var eta = await getDistanceAndETA(snapshotFallData.deviceLat, snapshotFallData.deviceLong)
                                 console.log("eta: ", eta)
                                 setDuration(eta.duration);
                                 setDistance(eta.distance)
 
                                 // @TODO: add address location here
+                                var geoLocation = await getLocationAddress(snapshotFallData.deviceLat, snapshotFallData.deviceLong)
+                                console.log("geoLocation: ", geoLocation)
+                                setAddress(geoLocation.address)
                             }
                         }
                     }
@@ -62,6 +69,8 @@ export default function RescueTrack({ route }) {
                 console.error("Error fetch fall res data: ", error);
             }
         }
+
+        fetchFallResData(fallResId)
     }, [])
 
     return (
@@ -75,7 +84,16 @@ export default function RescueTrack({ route }) {
             )}
             {fallResData && (
                 <Card>
-                    <Text></Text>
+                    <Text>Victim Details: </Text>
+                    {fallResData.victim && (
+                        <View>
+                            <Text>Victim Name: {fallResData.victim.firstName} {fallResData.victim.lastName}</Text>
+                            <Text>Victim Email: {fallResData.victim.email}</Text>
+                        </View>
+                    )}
+                    <Text>Victim Location: {address}</Text>
+                    <Text>ETA Distance: {distance}</Text>
+                    <Text>ETA Duration: {duration}</Text>
                 </Card>
             )}
         </View>

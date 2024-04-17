@@ -49,5 +49,44 @@ export const getDistanceAndETA = async (destinationLat, destinationLng) => {
 };
 
 export const getLocationAddress = async (lat, long) => {
+    const apiKey = "AIzaSyAdj-FlfzzCQKaGzzyZCvUqIh0QxIoTn_s";
 
+    const baseUrl = "https://maps.googleapis.com/maps/api/geocode/json?";
+    const latlng = `${lat},${long}`;
+    const params = {
+        "latlng": latlng,
+        "key": apiKey
+    };
+    console.log("geocode params: ", params);
+
+    try {
+        const response = await axios.get(baseUrl, { params });
+        const data = response.data;
+        // console.log("data: ", data)
+
+        if (data.status === "OK") {
+            console.log("Geocoding data: ", data)
+            const address = data.results[0].formatted_address
+            console.log("address: ", address)
+
+            // console.log("inside distance: ", distance)
+            // console.log("inside duration: ", duration)
+
+            // return {
+            //     distance,
+            //     duration,
+            //     userLat: originLat,
+            //     userLong: originLng
+            // }
+            return {
+                address
+            }
+
+        } else {
+            setError("Error fetching data");
+        }
+    } catch (error) {
+        console.log('Error:', error.message);
+        setError("Error fetching data");
+    }
 }

@@ -7,7 +7,7 @@ import { get, onValue, push, ref } from "firebase/database";
 import { Audio } from 'expo-av';
 import { Button, Card } from "react-native-paper";
 import { globalStyles } from "../../css/Global";
-import { getDistanceAndETA } from "../../util/ETA";
+import { getDistanceAndETA, getLocationAddress } from "../../util/ETA";
 
 // import {  }
 
@@ -22,6 +22,7 @@ export default function Home({ navigation }) {
     const [liveFall, setLiveFall] = useState();
     const [distance, setDistance] = useState();
     const [duration, setDuration] = useState();
+    const [address, setAddress] = useState();
     const [userLat, setUserLat] = useState();
     const [userLong, setUserLong] = useState();
 
@@ -292,6 +293,11 @@ export default function Home({ navigation }) {
             console.log("liveFall.deviceLong: ", liveFall.deviceLong);
             eta = await getDistanceAndETA(liveFall.deviceLat, liveFall.deviceLong)
             console.log("eta: ", eta)
+
+            var geoLocation = await getLocationAddress(liveFall.deviceLat, liveFall.deviceLong)
+            console.log("geoLocation: ", geoLocation)
+            setAddress(geoLocation.address)
+
             setDuration(eta.duration);
             setDistance(eta.distance)
             setUserLat(eta.userLat)
@@ -340,6 +346,11 @@ export default function Home({ navigation }) {
                     {distance && (
                         <Text>Distance: {distance}</Text>
                     )}
+
+                    {address && (
+                        <Text>Address: {address}</Text>
+                    )}
+
                     {"isFamily" in liveFall && liveFall.isFamily ? (
                         <Button mode="contained" onPress={_familyAck}>
                             I Acknowledge
