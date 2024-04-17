@@ -3,6 +3,7 @@ import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-nativ
 import { globalStyles } from "../css/Global";
 import { useForm, Controller } from 'react-hook-form';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import theme from "../css/theme";
 
 export default function UserSentRequests({ sentRequests, sendRequest }) {
     // console.log("UserSentRequests - props: ", props)
@@ -47,19 +48,19 @@ export default function UserSentRequests({ sentRequests, sendRequest }) {
                 {errors.email && <Text style={styles.errorText}>{errors.email.message}</Text>}
 
                 <TouchableOpacity style={[styles.button, globalStyles.marT10]} onPress={handleSubmit(_onSubmit)} >
-                    <Text style={styles.buttonText}>Send Request</Text>
+                    <Text style={styles.buttonText}>Add Family Member</Text>
                 </TouchableOpacity>
             </View>
 
-            <Text style={globalStyles.marT20}>Pending user sent requests:</Text>
+            <Text style={{ fontWeight: 'bold', marginTop: 20, color: 'black' }}>Pending user sent requests:</Text>
             <View style={styles.sentRequestsContainer}>
                 {sentRequests.map((request, key) => (
                     <View key={request.id} style={styles.sentRequestCard}>
                         <View style={styles.sentRequestCardData}>
-                            <Text>{request.id}</Text>
-                            <Text>Sent To: {request.familyMemberEmail}</Text>
-                            {/* <Text>Sent At: {request.requestedAt}</Text> */}
-                            <Text>Sent At: {new Date(request.requestedAt).toLocaleString()}</Text>
+                        <View style={{ flexDirection: 'row' }}>
+                            <Text style={{ width: 150, color:"#FFFFFF"}}>{request.familyMemberEmail}</Text>
+                            <Text style={{ flex: 1, textAlign: 'right',color:"#FFFFFF" }}> {new Date(request.requestedAt).toLocaleString()}</Text>
+                            </View>
                         </View>
                     </View>
                 ))}
@@ -73,7 +74,7 @@ const styles = StyleSheet.create({
         // flex: 1,
         justifyContent: 'center',
         padding: 10,
-        backgroundColor: 'green',
+        backgroundColor: "#FFFFFF",
         // padding: 20,
         // margin: 20,
         // width: '100%'
@@ -86,6 +87,7 @@ const styles = StyleSheet.create({
         margin: 12,
         borderWidth: 1,
         padding: 10,
+        backgroundColor:"#FFFFFF"
     },
     button: {
         //   flex: 1,
@@ -93,30 +95,31 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#eee',
         padding: 10,
-        backgroundColor: 'blue',
+        backgroundColor: theme.colors.secondary,
 
     },
     buttonText: {
-        color: "#FFF"
+        color: "#000000"
     },
     marT10: {
         marginTop: 10
     },
     sendRequestContainer: {
-        backgroundColor: 'orange',
+        backgroundColor: theme.colors.primary,
         width: '100%'
     },
     sentRequestsContainer: {
-        backgroundColor: 'green',
+        backgroundColor: '#FFFFFF',
         width: '100%',
         marginTop: 20
     },
     sentRequestCard: {
-        backgroundColor: 'pink',
+        backgroundColor: 'purple',
         display: 'flex',
         flexDirection: 'row',
         padding: 10,
-        marginBottom: 10
+        marginBottom: 10,
+        opacity: 1
     },
     sendRequestErrorText: {
         fontSize: 20,
@@ -138,7 +141,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: 10,
-        backgroundColor: 'blue',
+        backgroundColor: theme.colors.secondary,
         // borderRadius: 100
     },
     requestAcceptActionBtn: {

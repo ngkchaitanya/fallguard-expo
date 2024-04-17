@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import theme from "../css/theme";
 
 
 export default function UserReceivedRequests({ receivedRequests, accpetRequest, rejectRequest }) {
@@ -19,22 +20,20 @@ export default function UserReceivedRequests({ receivedRequests, accpetRequest, 
 
     return (
         <View style={styles.container}>
-            <Text>User Received Requests</Text>
+            <Text style={{ fontWeight: 'bold', marginTop: 20, color: 'black' }}>Received Requests:</Text>
             <View style={styles.receivedRequestsContainer}>
                 {receivedRequests && receivedRequests.map((request, key) => (
                     <View key={request.id} style={styles.receivedRequestCard}>
                         <View style={styles.receivedRequestCardData}>
-                            <Text>{request.id}</Text>
                             {request.sender && (
                                 <>
-                                    <Text>Sent By: {request.sender.email}</Text>
-                                    <Text>Sender First Name: {request.sender.firstName}</Text>
-                                    <Text>Sender Last Name: {request.sender.lastName}</Text>
+                                    {/* <Text>Sent By: {request.sender.email}</Text> */}
+                                    <Text>{request.sender.firstName} {request.sender.lastName}</Text>
                                 </>
                             )}
 
                             {/* <Text>Sent At: {request.requestedAt}</Text> */}
-                            <Text>Sent At: {new Date(request.requestedAt).toLocaleString()}</Text>
+                            <Text>On: {new Date(request.requestedAt).toLocaleString()}</Text>
                         </View>
                         <View style={styles.receivedRequestCardActions}>
                             <TouchableOpacity style={[styles.requestActionBtn, styles.requestAcceptActionBtn]}
@@ -58,19 +57,20 @@ const styles = StyleSheet.create({
     container: {
         justifyContent: 'center',
         padding: 10,
-        backgroundColor: 'green',
+        backgroundColor: '#FFFFFF',
     },
     receivedRequestsContainer: {
-        backgroundColor: 'green',
+        backgroundColor: '#FFFFFF',
         width: '100%',
         marginTop: 20
     },
     receivedRequestCard: {
-        backgroundColor: 'pink',
+        backgroundColor: theme.colors.secondary,
         display: 'flex',
         flexDirection: 'row',
         padding: 10,
-        marginBottom: 10
+        marginBottom: 10,
+        opacity: 0.8
     },
     receivedRequestCardData: {
         flex: 2
@@ -90,10 +90,10 @@ const styles = StyleSheet.create({
         // borderRadius: 100
     },
     requestAcceptActionBtn: {
-        backgroundColor: 'blue',
+        backgroundColor: theme.colors.primary,
     },
     requestRejectActionBtn: {
-        backgroundColor: "#FE927B"
+        backgroundColor: "#F7260c"
     },
     requestActionBtnText: {
         color: '#FFF'
