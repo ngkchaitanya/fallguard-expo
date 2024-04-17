@@ -45,7 +45,7 @@ export default function Index() {
                                 </Stack.Navigator>
                             ) : fallDetected ? (
                                 <Stack.Navigator>
-                                    <Stack.Screen name="Severity" component={Severity} />
+                                    <Stack.Screen name="Severity" component={Severity} options={{ headerShown: false }}/>
                                     {/* <Stack.Screen name="ExistingTrack" component={ExistingTrack} />
                                                 <Stack.Screen name="NewTrack" component={NewTrack} /> */}
                                     <Stack.Screen name="Track" component={Track} />

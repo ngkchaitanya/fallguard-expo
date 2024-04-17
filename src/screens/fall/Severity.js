@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { globalStyles } from "../../css/Global";
 import { FAB, Button, Card, ProgressBar } from 'react-native-paper';
 import { FallContext } from "../../contexts/FallContext";
@@ -298,35 +298,41 @@ export default function Severity({ navigation }) {
     // }, [])
 
     return (
+        <ScrollView contentContainerStyle={styles.scrollViewContainer}>
         <View style={styles.container}>
-            <Text style={styles.text}>Fall Detected!</Text>
-            <Text style={[styles.text, globalStyles.marT10]}>We have detected a Fall. Do you need help?</Text>
-            <View style={[styles.countdownContainer, globalStyles.marT10]}>
-                <CountdownCircleTimer
-                    // isPlaying
-                    duration={10}
-                    colors={['#004777', '#F7B801', '#A30000', '#A30000']}
-                    colorsTime={[20, 10, 5, 0]}
-                    size={40}
-                    strokeWidth={6}
-                    onComplete={_handleNoResponse}
-                    isPlaying={pauseTimer ? false : true}
-                >
-                    {({ remainingTime }) => <Text>{remainingTime}</Text>}
-                </CountdownCircleTimer>
+        
+        <Text style={{ fontWeight: 'bold', marginTop: 10, color: 'black',textAlign:"center" }}>FALL DETECTED!</Text>
+            <Text style={{ fontWeight: 'bold', marginTop: 10, color: 'black',textAlign:"center" }}>We have detected a Fall. Do you need help?</Text>
+            <View style={[styles.rowContainer, globalStyles.marT10]}>
+    <View style={[styles.timerContainer, { flex: 1 }]}>
+        <CountdownCircleTimer
+            // isPlaying
+            duration={30}
+            colors={['#004777', '#F7B801', '#A30000', '#A30000']}
+            colorsTime={[20, 10, 5, 0]}
+            size={40}
+            strokeWidth={6}
+            onComplete={_handleNoResponse}
+            isPlaying={pauseTimer ? false : true}
+        >
+            {({ remainingTime }) => <Text>{remainingTime}</Text>}
+        </CountdownCircleTimer>
+    </View>
 
-                {/* <ProgressBar progress={0.5} /> */}
-            </View>
+    <View style={{ flex: 2 }}>
+        <Button 
+            mode="outlined"
+            style={styles.button}
+            contentStyle={{ height: 40 }}
+            labelStyle={[styles.buttonText, { textAlign: 'center' }]}
+            onPress={_handleNoFall}
+        >
+            <Text style={{ color: "#000000", fontSize: 14 }}>Not A Fall</Text>
+        </Button>
+    </View>
+</View>
 
-            <Button mode="contained"
-                buttonColor="#DAAF2A"
-                style={styles.button}
-                contentStyle={styles.buttonContent}
-                labelStyle={styles.buttonText}
-                onPress={_handleNoFall}
-            >
-                Not A Fall
-            </Button>
+
 
             <View style={styles.fallOptionsContainer}>
                 <Card style={styles.choiceCard} contentStyle={styles.choiceCard1Content}>
@@ -342,7 +348,7 @@ export default function Severity({ navigation }) {
                     </Button>
                 </Card>
                 <Card style={styles.choiceCard} contentStyle={styles.choiceCard2Content}>
-                    <Text style={styles.choiceCardText}>I feel moderate pain and I would need help frpm someone.</Text>
+                    <Text style={styles.choiceCardText}>I feel moderate pain and I would need help from someone.</Text>
                     <Button mode="contained"
                         buttonColor="#FFA04B"
                         style={styles.button}
@@ -365,9 +371,6 @@ export default function Severity({ navigation }) {
                         I need emergency help!
                     </Button>
                 </Card>
-
-            </View>
-            <View style={styles.fabContainer}>
                 <FAB
                     icon="alert-octagon"
                     style={styles.fabButton}
@@ -375,18 +378,23 @@ export default function Severity({ navigation }) {
                     label="Call 911"
                     color="#fff"
                 />
-            </View>
 
+            </View>
+            
         </View>
+        </ScrollView>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        justifyContent: 'center',
+        // flex: 1,
+        // justifyContent: 'center',
         paddingHorizontal: 10,
         // backgroundColor: 'green'
+    },
+    scrollViewContainer: {
+        flexGrow: 1,
     },
     text: {
         textAlign: 'center',
@@ -394,7 +402,7 @@ const styles = StyleSheet.create({
     button: {
         // flex: 1,
         // justifyContent: 'center',
-        // alignItems: 'center',
+         alignItems: 'center',
         // padding: 10,
         marginTop: 16
     },
@@ -421,6 +429,7 @@ const styles = StyleSheet.create({
     },
     fabButton: {
         backgroundColor: 'red',
+        marginTop:50
     },
     choiceCard: {
         // padding: 16,
@@ -447,5 +456,12 @@ const styles = StyleSheet.create({
         backgroundColor: 'pink',
         alignItems: 'center'
         // height: 40
+    },rowContainer: {
+        flexDirection: 'row',
+        alignItems: 'center', // Align items vertically in the center
+    },
+    timerContainer: {
+        alignItems: 'center', // Align items horizontally in the center
     }
+    
 });

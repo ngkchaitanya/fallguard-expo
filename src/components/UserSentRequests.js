@@ -47,13 +47,16 @@ export default function UserSentRequests({ sentRequests, sendRequest }) {
                 />
                 {errors.email && <Text style={styles.errorText}>{errors.email.message}</Text>}
 
-                <TouchableOpacity style={[styles.button, globalStyles.marT10]} onPress={handleSubmit(_onSubmit)} >
+               
+            </View>
+            <TouchableOpacity style={[styles.button, globalStyles.marT10]} onPress={handleSubmit(_onSubmit)} >
                     <Text style={styles.buttonText}>Add Family Member</Text>
                 </TouchableOpacity>
-            </View>
 
-            <Text style={{ fontWeight: 'bold', marginTop: 20, color: 'black' }}>Pending user sent requests:</Text>
-            <View style={styles.sentRequestsContainer}>
+            {sentRequests.length>0 && (<Text style={{ fontWeight: 'bold', marginTop: 20, color: 'black' }}>Pending user sent requests:</Text>)}
+
+            {sentRequests.length>0 && (<View style={styles.sentRequestsContainer}>
+
                 {sentRequests.map((request, key) => (
                     <View key={request.id} style={styles.sentRequestCard}>
                         <View style={styles.sentRequestCardData}>
@@ -64,7 +67,7 @@ export default function UserSentRequests({ sentRequests, sendRequest }) {
                         </View>
                     </View>
                 ))}
-            </View>
+            </View>)}
         </View>
     )
 }
@@ -85,9 +88,13 @@ const styles = StyleSheet.create({
     input: {
         height: 40,
         margin: 12,
+        marginVertical: 8, // Added vertical margin
+        marginHorizontal: 12, // Added horizontal margin
         borderWidth: 1,
         padding: 10,
-        backgroundColor:"#FFFFFF"
+        backgroundColor:"#FFFFFF",
+         // Rounded corners for the button
+
     },
     button: {
         //   flex: 1,
@@ -96,6 +103,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#eee',
         padding: 10,
         backgroundColor: theme.colors.secondary,
+        borderRadius: 10, // Rounded corners for the button
+
 
     },
     buttonText: {
@@ -106,7 +115,8 @@ const styles = StyleSheet.create({
     },
     sendRequestContainer: {
         backgroundColor: theme.colors.primary,
-        width: '100%'
+        width: '100%',
+        borderRadius: 10,
     },
     sentRequestsContainer: {
         backgroundColor: '#FFFFFF',
