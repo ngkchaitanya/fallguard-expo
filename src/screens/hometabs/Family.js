@@ -390,7 +390,7 @@ export default function Family() {
             <ScrollView>
                 {/* <ListView> */}
                 <View style={styles.familySections}>
-                    {userSentRequests.length > 0 && (<UserSentRequests sentRequests={userSentRequests} sendRequest={_sendRequest} />)}
+                    <UserSentRequests sentRequests={userSentRequests} sendRequest={_sendRequest} />
                     {requestsToUser.length > 0 && (<UserReceivedRequests receivedRequests={requestsToUser} accpetRequest={_accpetRequest} rejectRequest={_rejectRequest} />)}
                     {(userSentFamily.length > 0 || userReceivedFamily.length > 0) && (<UserFamily userSentFamily={userSentFamily} userReceivedFamily={userReceivedFamily} />)}
                 </View>

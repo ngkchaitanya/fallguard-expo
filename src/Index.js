@@ -22,6 +22,7 @@ import Severity from './screens/fall/Severity';
 import Track from './screens/fall/Track';
 import ExistingTrack from './screens/fall/ExistingTrack';
 import NewTrack from './screens/fall/NewTrack';
+import RescueTrack from './screens/fall/RescueTrack';
 // import LandingScreen from './screens/LandingScreen';
 
 const Stack = createNativeStackNavigator();
@@ -52,6 +53,7 @@ export default function Index() {
                             ) : (
                                 <Stack.Navigator>
                                     <Stack.Screen name="HomeTabs" component={HomeTabs} options={{ headerShown: false }} />
+                                    <Stack.Screen name="RescueTrack" component={RescueTrack} options={{ headerShown: false }} />
                                 </Stack.Navigator>
                             )}
                         </>

@@ -109,6 +109,25 @@ export const FallProvider = ({ children }) => {
         }
     }
 
+    const storeFallResponse = async (fallResId) => {
+        try {
+            await AsyncStorage.setItem('fall-res-id', fallResId);
+        } catch (e) {
+            // saving error
+            console.error("Error while trying to store fall-res-id: ", e);
+        }
+    }
+
+    const removeFallResponse = async () => {
+        try {
+            await AsyncStorage.removeItem('fall-res-id')
+
+            setCurrentFallId(null);
+        } catch (error) {
+            console.error("Error while trying to remove fall-res-id: ", error);
+        }
+    }
+
     useEffect(() => {
         console.log("--- Initial Subscription UseEffect ---")
         // _subscribe();
@@ -172,7 +191,7 @@ export const FallProvider = ({ children }) => {
     }, [accData, gyroData, fallDetected])
 
     return (
-        <FallContext.Provider value={{ fallDetected, accData, gyroData, currentFallId, resetFallDetection, storeFall, removeFall }}>
+        <FallContext.Provider value={{ fallDetected, accData, gyroData, currentFallId, resetFallDetection, storeFall, removeFall, storeFallResponse, removeFallResponse }}>
             <View style={styles.container}>
                 <Text style={styles.text}>Accelerometer:</Text>
                 <Text style={styles.text}>x: {accData.x}</Text>

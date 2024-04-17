@@ -23,6 +23,7 @@ export default function SignUp({ route, navigation }) {
         const usersRef = ref(fbDB, 'user');
         var userData = {
             ...data,
+            email: data.email.toLowerCase(),
             middleName: data.middleName ? data.middleName : null,
             isVolunteer: userType && userType == 'volunteer' ? true : false,
             createdAt: new Date().getTime(),
@@ -41,6 +42,7 @@ export default function SignUp({ route, navigation }) {
                 }
             }
             const newUserRef = await push(usersRef, userData);
+            const newUserKey = newUserRef.key;
             loginUser({
                 ...userData,
                 id: newUserKey,

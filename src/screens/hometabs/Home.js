@@ -3,14 +3,16 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { AuthContext } from "../../contexts/AuthContext";
 import { FirebaseContext } from "../../contexts/FirebaseContext";
 import { FallContext } from "../../contexts/FallContext";
-import { get, onValue, ref } from "firebase/database";
+import { get, onValue, push, ref } from "firebase/database";
 import { Audio } from 'expo-av';
-import { Card } from "react-native-paper";
+import { Button, Card } from "react-native-paper";
+import { globalStyles } from "../../css/Global";
+import { getDistanceAndETA } from "../../util/ETA";
 
 // import {  }
 
-export default function Home() {
-    const { resetFallDetection } = useContext(FallContext);
+export default function Home({ navigation }) {
+    const { resetFallDetection, storeFallResponse } = useContext(FallContext);
 
     const liveFallRef = useRef(null);
 
@@ -18,6 +20,10 @@ export default function Home() {
     const { user, logoutUser } = useContext(AuthContext);
 
     const [liveFall, setLiveFall] = useState();
+    const [distance, setDistance] = useState();
+    const [duration, setDuration] = useState();
+    const [userLat, setUserLat] = useState();
+    const [userLong, setUserLong] = useState();
 
     const _resetFall = () => {
         resetFallDetection();
@@ -41,6 +47,73 @@ export default function Home() {
         }
     }
 
+    const _familyAck = async () => {
+        console.log("Acknowledge family")
+        try {
+            const fallResRef = ref(fbDB, 'fall_response');
+            var fallResData = {
+                fallId: liveFall.id,
+                familyId: user.id,
+                family: {
+                    ...user
+                },
+                rescueDeviceLat: userLat,
+                rescueDeviceLong: userLong,
+                acceptedAt: new Date().getTime(),
+                createdAt: new Date().getTime(),
+            }
+            const newFallResRef = await push(fallResRef, fallResData);
+            const newFallResId = newFallResRef.key;
+
+            // @TODO: store fall res
+            storeFallResponse(newFallResId);
+
+            navigation.replace('RescueTrack', {
+                fallResId: newFallResId,
+                isVolunteer: false,
+                isFamily: true
+            });
+        } catch (error) {
+            console.error("Error: ", error)
+        }
+    }
+
+    const _volunteerAccept = async () => {
+        console.log("Volunteer Accept")
+
+        try {
+            const fallResRef = ref(fbDB, 'fall_response');
+            var fallResData = {
+                fallId: liveFall.id,
+                volunteerId: user.id,
+                volunteer: {
+                    ...user
+                },
+                rescueDeviceLat: userLat,
+                rescueDeviceLong: userLong,
+                acceptedAt: new Date().getTime(),
+                createdAt: new Date().getTime(),
+            }
+            const newFallResRef = await push(fallResRef, fallResData);
+            const newFallResId = newFallResRef.key;
+
+            // @TODO: store fall res
+            storeFallResponse(newFallResId);
+
+            navigation.replace('RescueTrack', {
+                fallResId: newFallResId,
+                isVolunteer: true,
+                isFamily: false
+            });
+        } catch (error) {
+            console.error("Error: ", error)
+        }
+    }
+
+    const _volunteerReject = () => {
+        console.log("Volunteer Reject")
+    }
+
     useEffect(() => {
         // listen to any falls
         const fallsRef = ref(fbDB, 'fall');
@@ -49,17 +122,20 @@ export default function Home() {
                 var allFalls = snapshot.val();
 
                 var liveFalls = [];
-                for (const [key, item] of Object.entries(allFalls)) {
+                if (allFalls) {
+                    for (const [key, item] of Object.entries(allFalls)) {
 
-                    if ("resolvedAt" in item && item.resolvedAt) {
-                        // fall is resolved
-                    } else {
-                        liveFalls.push({
-                            id: key,
-                            ...item
-                        })
+                        if ("resolvedAt" in item && item.resolvedAt) {
+                            // fall is resolved
+                        } else {
+                            liveFalls.push({
+                                id: key,
+                                ...item
+                            })
+                        }
                     }
                 }
+
 
                 // var liveFall = {}
                 if (liveFalls && liveFalls.length) {
@@ -113,9 +189,12 @@ export default function Home() {
                                     if (familyMembers && familyMembers.length) {
                                         console.log("inside family members")
                                         for (const fallItem of liveFalls) {
-                                            const familyFell = familyMembers.find(member => member.id == fallItem.userId);
+                                            const familyFell = familyMembers.find(member => member.id == fallItem.victimId);
                                             if (familyFell) {
                                                 // legit family fall
+                                                // var eta = getDistanceAndETA();
+                                                // console.log("eta: ", eta)
+
                                                 localLiveFall = {
                                                     ...fallItem,
                                                     isFamily: true,
@@ -169,11 +248,13 @@ export default function Home() {
                                                     // new fall
                                                     // @TODO: check distance
                                                     console.log("--- Should decide based on distance ---")
+                                                    // var eta = getDistanceAndETA(fallItem.deviceLat, fallItem.deviceLong);
+                                                    // console.log("eta - vol: ", eta)
                                                     localLiveFall = {
                                                         ...fallItem,
                                                         victim: {
-                                                            id: fallItem.userId,
-                                                            ...usersData[fallItem.userId]
+                                                            id: fallItem.victimId,
+                                                            ...usersData[fallItem.victimId]
                                                         }
                                                     }
                                                     setLiveFall(localLiveFall);
@@ -201,10 +282,24 @@ export default function Home() {
         console.log("useEffect - sound - check")
         console.log("liveFall: ", liveFall)
         console.log("liveFallRef.current: ", liveFallRef.current)
-        if (liveFall && liveFallRef.current != liveFall) {
+        const fallChange = async () => {
             console.log("sound and store")
             startSound();
+
             liveFallRef.current = liveFall
+            console.log("liveFall: ", liveFall);
+            console.log("liveFall.deviceLat: ", liveFall.deviceLat);
+            console.log("liveFall.deviceLong: ", liveFall.deviceLong);
+            eta = await getDistanceAndETA(liveFall.deviceLat, liveFall.deviceLong)
+            console.log("eta: ", eta)
+            setDuration(eta.duration);
+            setDistance(eta.distance)
+            setUserLat(eta.userLat)
+            setUserLong(eta.userLong)
+        }
+
+        if (liveFall && liveFallRef.current != liveFall) {
+            fallChange()
         }
     }, [liveFall])
 
@@ -223,8 +318,14 @@ export default function Home() {
             </TouchableOpacity>
 
             {liveFall && (
-                <Card>
+                <Card style={globalStyles.marT20}>
+                    {"isFamily" in liveFall && liveFall.isFamily ? (
+                        <Text>Your fear one fell!!</Text>
+                    ) : (
+                        <Text>There is a fall victim nearby!</Text>
+                    )}
                     <Text>Fall id: {liveFall.id}</Text>
+                    <Text>Fall Time: {new Date(liveFall.createdAt).toLocaleString()}</Text>
                     {liveFall.victim && (
                         <View>
                             <Text>Victim id: {liveFall.victim.id}</Text>
@@ -232,6 +333,25 @@ export default function Home() {
 
                         </View>
                     )}
+                    {duration && (
+                        <Text>Duration: {duration}</Text>
+                    )}
+
+                    {distance && (
+                        <Text>Distance: {distance}</Text>
+                    )}
+                    {"isFamily" in liveFall && liveFall.isFamily ? (
+                        <Button mode="contained" onPress={_familyAck}>
+                            I Acknowledge
+                        </Button>
+                    ) : (
+                        <View style={styles.ctaContainer}>
+                            <Button mode="contained" icon="check" onPress={_volunteerAccept}>Accept</Button>
+                            <Button style={globalStyles.marT10} mode="outlined" icon="close" onPress={_volunteerReject}>Reject</Button>
+                        </View>
+                    )}
+
+
                 </Card>
             )}
 
@@ -278,5 +398,8 @@ const styles = StyleSheet.create({
     },
     fallButtonText: {
         color: "#FFF"
+    },
+    ctaContainer: {
+        backgroundColor: 'green'
     }
 });
