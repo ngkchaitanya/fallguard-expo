@@ -90,3 +90,42 @@ export const getLocationAddress = async (lat, long) => {
         setError("Error fetching data");
     }
 }
+
+export const getDistAndETABetweenUsers = async (originLat, originLng, destinationLat, destinationLng) => {
+    const apiKey = "AIzaSyAdj-FlfzzCQKaGzzyZCvUqIh0QxIoTn_s";
+
+    const baseUrl = "https://maps.googleapis.com/maps/api/directions/json?";
+    const origin = `${originLat},${originLng}`;
+    const destination = `${destinationLat},${destinationLng}`;
+    const params = {
+        "origin": origin,
+        "destination": destination,
+        "key": apiKey
+    };
+    console.log("bw users - params: ", params);
+
+    try {
+        const response = await axios.get(baseUrl, { params });
+        const data = response.data;
+        console.log("data: ", data)
+
+        if (data.status === "OK") {
+            const distance = data.routes[0].legs[0].distance.text;
+            const duration = data.routes[0].legs[0].duration.text;
+
+            console.log("inside distance: ", distance)
+            console.log("inside duration: ", duration)
+
+            return {
+                distance,
+                duration,
+            }
+
+        } else {
+            setError("Error fetching data");
+        }
+    } catch (error) {
+        console.log('Error:', error.message);
+        setError("Error fetching data");
+    }
+}
