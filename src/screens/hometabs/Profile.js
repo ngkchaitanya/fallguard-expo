@@ -13,6 +13,7 @@ export default function Profile() {
             <Text>Profile</Text>
             <Text>Id: {user.id}</Text>
             <Text>Email: {user.email}</Text>
+            <Text>Volunteer: {user.isVolunteer ? "True" : "False"}</Text>
             <TouchableOpacity style={{ backgroundColor: 'red', margin: 20 }} onPress={_logout}>
                 <Text>Logout</Text>
             </TouchableOpacity>

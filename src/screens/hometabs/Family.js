@@ -164,6 +164,7 @@ export default function Family() {
 
             // Prepare the update object
             const updates = {};
+            updates[itemLocationPath + '/familyMemberId'] = user.id;
             updates[itemLocationPath + '/acceptedAt'] = new Date().getTime();
             console.log("updates: ", updates)
 
@@ -188,6 +189,7 @@ export default function Family() {
 
             // Prepare the update object
             const updates = {};
+            updates[itemLocationPath + '/familyMemberId'] = user.id;
             updates[itemLocationPath + '/rejectedAt'] = new Date().getTime();
             console.log("updates: ", updates)
 

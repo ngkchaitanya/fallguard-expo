@@ -3,6 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Accelerometer, Gyroscope } from 'expo-sensors';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Location from 'expo-location';
 
 export const FallContext = createContext();
 
@@ -112,6 +113,20 @@ export const FallProvider = ({ children }) => {
         console.log("--- Initial Subscription UseEffect ---")
         // _subscribe();
         return () => _unsubscribe();
+    }, []);
+
+    useEffect(() => {
+        (async () => {
+
+            let { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                setErrorMsg('Permission to access location was denied');
+                return;
+            }
+
+            let location = await Location.getCurrentPositionAsync({});
+            // setLocation(location);
+        })();
     }, []);
 
     useEffect(() => {

@@ -11,6 +11,7 @@ import { push, ref } from "firebase/database";
 import { AuthContext } from "../../contexts/AuthContext";
 import { deviceName } from "expo-device";
 import * as Device from 'expo-device';
+import * as Location from 'expo-location';
 
 export default function Severity({ navigation }) {
     const { fbDB } = useContext(FirebaseContext);
@@ -34,7 +35,9 @@ export default function Severity({ navigation }) {
         isConscious: true,
         severity: null, // mild, moderate, extreme
         emergencyCalledAt: null,
-        createdAt: new Date().getTime()
+        createdAt: new Date().getTime(),
+        deviceLat: null,
+        deviceLong: null
     });
 
     // const triggerVolunteerSystem = async (isConscious) => {
@@ -60,6 +63,14 @@ export default function Severity({ navigation }) {
         }
 
         try {
+            let location = await Location.getCurrentPositionAsync({});
+            localFallData.deviceLat = location.coords.latitude
+            localFallData.deviceLong = location.coords.longitude
+        } catch (error) {
+            console.error('Error while getting location:', error);
+        }
+
+        try {
             await push(fallsRef, localFallData);
         } catch (error) {
             console.error('Error:', error);
@@ -76,6 +87,14 @@ export default function Severity({ navigation }) {
             isFalseDetection: false,
             isConscious: true,
             severity: "mild"
+        }
+
+        try {
+            let location = await Location.getCurrentPositionAsync({});
+            localFallData.deviceLat = location.coords.latitude
+            localFallData.deviceLong = location.coords.longitude
+        } catch (error) {
+            console.error('Error while getting location:', error);
         }
 
         try {
@@ -96,6 +115,14 @@ export default function Severity({ navigation }) {
             isFalseDetection: false,
             isConscious: true,
             severity: "moderate"
+        }
+
+        try {
+            let location = await Location.getCurrentPositionAsync({});
+            localFallData.deviceLat = location.coords.latitude
+            localFallData.deviceLong = location.coords.longitude
+        } catch (error) {
+            console.error('Error while getting location:', error);
         }
 
         try {
@@ -122,6 +149,14 @@ export default function Severity({ navigation }) {
             isFalseDetection: false,
             isConscious: true,
             severity: "extreme"
+        }
+
+        try {
+            let location = await Location.getCurrentPositionAsync({});
+            localFallData.deviceLat = location.coords.latitude
+            localFallData.deviceLong = location.coords.longitude
+        } catch (error) {
+            console.error('Error while getting location:', error);
         }
 
         try {
@@ -154,6 +189,14 @@ export default function Severity({ navigation }) {
             isFalseDetection: false,
             isConscious: false,
             severity: "extreme"
+        }
+
+        try {
+            let location = await Location.getCurrentPositionAsync({});
+            localFallData.deviceLat = location.coords.latitude
+            localFallData.deviceLong = location.coords.longitude
+        } catch (error) {
+            console.error('Error while getting location:', error);
         }
 
         try {
