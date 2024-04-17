@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, ScrollView, ListView} from "react-native";
 import { FirebaseContext } from "../../contexts/FirebaseContext";
 import { AuthContext } from "../../contexts/AuthContext";
 import { get, onValue, push, ref, update } from "firebase/database";
@@ -7,6 +7,7 @@ import UserReceivedRequests from "../../components/UserReceivedRequests";
 import UserSentRequests from "../../components/UserSentRequests";
 import UserFamily from "../../components/UserFamily";
 import Toast from 'react-native-toast-message';
+import theme from "../../css/theme";
 
 export default function Family() {
     const { fbDB } = useContext(FirebaseContext);
@@ -386,23 +387,26 @@ export default function Family() {
 
     return (
         <View style={styles.container}>
-            <Text>Family</Text>
+            <ScrollView>
+            {/* <ListView> */}
             <View style={styles.familySections}>
-                <UserReceivedRequests receivedRequests={requestsToUser} accpetRequest={_accpetRequest} rejectRequest={_rejectRequest} />
-                <UserSentRequests sentRequests={userSentRequests} sendRequest={_sendRequest} />
-                <UserFamily userSentFamily={userSentFamily} userReceivedFamily={userReceivedFamily} />
+                {userSentRequests.length>0 && (<UserSentRequests sentRequests={userSentRequests} sendRequest={_sendRequest} />)}
+                {requestsToUser.length > 0 && (<UserReceivedRequests receivedRequests={requestsToUser} accpetRequest={_accpetRequest} rejectRequest={_rejectRequest} />)}
+                { (userSentFamily.length >0 || userReceivedFamily.length>0) && (<UserFamily userSentFamily={userSentFamily} userReceivedFamily={userReceivedFamily} />)}
             </View>
+            {/* </ListView> */}
+            </ScrollView>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
+        // flex: 1,
+        // alignItems: 'center',
+        // justifyContent: 'center',
         padding: 16,
-        backgroundColor: 'yellow'
+        backgroundColor: '#FFFFFF'
     },
     familySections: {
         display: 'flex',
