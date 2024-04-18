@@ -5,6 +5,7 @@ import { get, onValue, ref } from "firebase/database";
 import { FirebaseContext } from "../../contexts/FirebaseContext";
 import { ActivityIndicator, Button, Card } from "react-native-paper";
 import { getDistAndETABetweenUsers, getLocationAddress } from "../../util/ETA";
+import theme from "../../css/theme";
 // import { Text } from "react-native-paper";
 
 export default function Track({ route, navigation }) {
@@ -345,10 +346,10 @@ export default function Track({ route, navigation }) {
                                     ))}
                                 </View>
                             ) : (
-                                <Card>
-                                    <Text>Hang tight while we get you help!</Text>
-                                    <Text>Image comes here</Text>
-                                </Card>
+                                <View>
+                                    <Text style={[styles.message, { fontWeight: 'bold' }, { fontSize: 30 }]}>Finding help for you!</Text>
+                                    <ActivityIndicator animating={true} color={theme.colors.secondary} size={70} marginBottom={250} />
+                                </View>
                             )}
 
                             <View>
@@ -378,5 +379,11 @@ const styles = StyleSheet.create({
     },
     text: {
         textAlign: 'center',
+    },
+    message: {
+        textAlign: 'center',
+        fontSize: 20,
+        marginBottom: 230,
+        color: theme.colors.primary
     },
 });

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View,Image, ActivityIndicator } from "react-native";
 import { AuthContext } from "../../contexts/AuthContext";
 import { FirebaseContext } from "../../contexts/FirebaseContext";
 import { FallContext } from "../../contexts/FallContext";
@@ -8,6 +8,7 @@ import { Audio } from 'expo-av';
 import { Button, Card } from "react-native-paper";
 import { globalStyles } from "../../css/Global";
 import { getDistanceAndETA, getLocationAddress } from "../../util/ETA";
+import theme from "../../css/theme";
 
 // import {  }
 
@@ -316,62 +317,78 @@ export default function Home({ navigation }) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Home</Text>
+            {/* <Text style={styles.text}>Home</Text> */}
+            {liveFall ?
+            (
 
-            {user && user.isVolunteer && (
-                <View>
-                    <Text>Volunteer stuff</Text>
-                </View>
-            )}
-
-            <TouchableOpacity style={styles.button} onPress={_resetFall}>
-                <Text style={styles.buttonText}>Reset Fall Detection</Text>
-            </TouchableOpacity>
-
-            {liveFall && (
-                <Card style={globalStyles.marT20}>
+                <Card style={[globalStyles.marT20, styles.redCard]}>
+                    <View style={styles.details}>
                     {"isFamily" in liveFall && liveFall.isFamily ? (
-                        <Text>Your fear one fell!!</Text>
+                        <Text style={[styles.alertText, {textAlign:"center"}, {fontWeight:'bold'}]} >YOUR DEAR ONE FELL!!</Text>
                     ) : (
-                        <Text>There is a fall victim nearby!</Text>
+                        <Text style={[styles.alertText, {textAlign:"center"}, {fontWeight:'bold'}]}>THERE IS A FALL VICTIM NEARBY!</Text>
                     )}
-                    <Text>Fall id: {liveFall.id}</Text>
-                    <Text>Fall Time: {new Date(liveFall.createdAt).toLocaleString()}</Text>
+                    {/* <Text>Fall id: {liveFall.id}</Text> */}
+                    
                     {liveFall.victim && (
                         <View>
-                            <Text>Victim id: {liveFall.victim.id}</Text>
-                            <Text>Victim email: {liveFall.victim.email}</Text>
+                            {/* <Text>Victim id: {liveFall.victim.id}</Text> */}
+                            <Text style={[styles.alertText, {padding:10}]} >Name: {liveFall.victim.firstName} {liveFall.victim.lastName}</Text>
 
                         </View>
                     )}
-                    {duration && (
-                        <Text>Duration: {duration}</Text>
+                    <Text style={[styles.alertText, {padding:10}]} >Time of Fall: {new Date(liveFall.createdAt).toLocaleString()}</Text>
+                    
+                    {distance && duration && (
+                        <View style={styles.etaview}>
+                        <View style={styles.half}>
+                        <Text style={[styles.alertText, {textAlign:"center"} ]} >Distance</Text>
+                        <Text style={[styles.alertText, {padding:10}, {fontWeight:'bold'}, {fontSize:23}]}>{distance}</Text>
+                        </View>
+                        <View style={styles.divider} />
+                        <View style={styles.half}>
+                        <Text style={[styles.alertText, {textAlign:"center"}]} >ETA</Text>
+                        <Text style={[styles.alertText, {padding:10}, {fontWeight:'bold'}, {fontSize:23}]}>{duration}</Text>
+                          </View>
+                        </View>
                     )}
 
-                    {distance && (
-                        <Text>Distance: {distance}</Text>
-                    )}
-
+                    
                     {address && (
-                        <Text>Address: {address}</Text>
+                        <View style={styles.location}>
+                        <Text style={[styles.alertText, {textAlign:"center"}]} >FALL LOCATION</Text>
+                        <Text style={[styles.alertText, {padding:10} , {fontWeight:'bold'}]}>{address}</Text>
+                        </View>
                     )}
-
-                    {userLat && userLat ? (
+                    </View>
+                    <View style={styles.actButton}>
+                    
+                    {userLat && userLong ? (
                         <>
                             {"isFamily" in liveFall && liveFall.isFamily ? (
-                                <Button mode="contained" onPress={_familyAck}>
+                                <Button mode="contained" onPress={_familyAck} style={styles.ackButton}>
                                     I Acknowledge
                                 </Button>
                             ) : (
                                 <View style={styles.ctaContainer}>
-                                    <Button mode="contained" icon="check" onPress={_volunteerAccept}>Accept</Button>
-                                    <Button style={globalStyles.marT10} mode="outlined" icon="close" onPress={_volunteerReject}>Reject</Button>
+                                    <Button mode="contained" icon="check" onPress={_volunteerAccept} style={styles.ackButton}>Accept</Button>
+                                    <Button style={[globalStyles.marT10,styles.rejButton]} mode="outlined" icon="close" onPress={_volunteerReject}>Reject</Button>
                                 </View>
                             )}
                         </>
-                    ) : (<Text>Loading</Text>)}
+                    ) : (<ActivityIndicator animating={true} color="#FFFFFF" size={40} />)}
+                    </View>
                 </Card>
-            )}
+            ):(<>
+            
+
+            
+                
+            <Text style={[styles.caption, { fontWeight: 'bold' }]}>FALLGUARD</Text>
+            <Text style={styles.caption}>Peace of mind in every step!</Text>
+            <Image source={require('../../../assets/home.png')} style={styles.image} resizeMode="cover" />
+           
+            </>)}
 
         </View>
     )
@@ -382,6 +399,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         paddingHorizontal: 10,
+        backgroundColor: '#FFFFFF'
     },
     text: {
         textAlign: 'center',
@@ -418,6 +436,73 @@ const styles = StyleSheet.create({
         color: "#FFF"
     },
     ctaContainer: {
-        backgroundColor: 'green'
-    }
+        
+    },
+    caption: {
+        textAlign: 'center',
+        fontSize: 20,
+        marginBottom: 10,
+        color: theme.colors.primary
+    },
+    image: {
+        flex: 0.8,
+        marginTop: 100,
+        width: '100%',
+        height: '100%',
+    },
+    redCard: {
+        flex:1,
+        backgroundColor: 'red',
+        padding: 20,
+        borderRadius: 10,
+        marginBottom:80,
+        marginTop: 40,
+        elevation: 4, // Add elevation for shadow effect
+    },
+    ackButton: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: theme.colors.primary,
+        padding: 10,
+    },
+    rejButton: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: theme.colors.secondary,
+        padding: 10,
+    },
+    alertText: {
+        color: '#FFFFFF',
+    },
+    details:{
+        
+    },
+    actButton:{
+        marginTop:30,
+    },
+    location: {
+        borderWidth: 2,
+        borderColor: 'black',
+        borderRadius: 10, // Adjust the value to change the roundness of the corners
+        padding: 10,
+      },
+      etaview: {
+        flexDirection: 'row',
+    borderWidth: 2,
+    borderColor: 'black',
+    borderRadius: 10,
+    overflow: 'hidden', 
+    marginBottom:10
+      },
+      half: {
+        flex: 1,
+        padding: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      divider: {
+        width: 2,
+        backgroundColor: 'black',
+      },
+    
 });
