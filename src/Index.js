@@ -41,14 +41,14 @@ export default function Index() {
                         <>
                             {currentFallId ? (
                                 <Stack.Navigator >
-                                    <Stack.Screen name="Track" component={Track} />
+                                    <Stack.Screen name="Track" component={Track} options={{ headerShown: false }}/>
                                 </Stack.Navigator>
                             ) : fallDetected ? (
                                 <Stack.Navigator>
                                     <Stack.Screen name="Severity" component={Severity} options={{ headerShown: false }}/>
                                     {/* <Stack.Screen name="ExistingTrack" component={ExistingTrack} />
                                                 <Stack.Screen name="NewTrack" component={NewTrack} /> */}
-                                    <Stack.Screen name="Track" component={Track} />
+                                    <Stack.Screen name="Track" component={Track}options={{ headerShown: false }} />
                                 </Stack.Navigator>
                             ) : (
                                 <Stack.Navigator>

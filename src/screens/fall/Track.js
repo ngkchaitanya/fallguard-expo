@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ScrollView,Image } from "react-native";
 import { FallContext } from "../../contexts/FallContext";
 import { get, onValue, ref } from "firebase/database";
 import { FirebaseContext } from "../../contexts/FirebaseContext";
@@ -225,7 +225,7 @@ export default function Track({ route, navigation }) {
 
         console.log("useeffect - geo - fallResponses: ", fallResponses);
         console.log("useeffect - geo - fallData: ", fallData);
-        if (fallResponses && fallData) {
+        if (fallResponses &&fallResponses.length && fallData) {
             fetchFallResponseETAs(fallResponses, fallData)
         }
     }, [fallResponses, fallData])
@@ -278,22 +278,23 @@ export default function Track({ route, navigation }) {
             {showLoading ? (
                 <ActivityIndicator animating={true} size={40} color={'green'} />
             ) : (
+                <ScrollView>
                 <View>
                     {victimRescued ? (
-                        <View>
-                            <Text>Help Arrived!</Text>
-                            <Text>Icon goes here</Text>
-                            <Button mode="contained" icon="check" onPress={_rescueAck}>
+                        <View style= {{marginTop:80}}>
+                            <Text style={[styles.caption, { fontWeight: 'bold' }]}>Help Arrived!</Text>
+                            <Image source={require('../../../assets/helparrived.png')} style={styles.image} resizeMode="cover" />
+                            <Button mode="contained" icon="check" onPress={_rescueAck} style={styles.lastbutton}>
                                 Got It
                             </Button>
                         </View>
                     ) : (
                         <View>
-                            <Text>Track</Text>
-                            <Button onPress={() => removeFall()}>
+                            {/* <Text>Track</Text> */}
+                            {/* <Button onPress={() => removeFall()}>
                                 Remove Fall
-                            </Button>
-                            {fallData && (
+                            </Button> */}
+                            {/* {fallData && (
                                 <Card>
                                     <Text>Fall Data:</Text>
                                     <Text>id: {fallData.id}</Text>
@@ -303,41 +304,63 @@ export default function Track({ route, navigation }) {
                                     <Text>deviceLong: {fallData.deviceLong}</Text>
                                     <Text>createdAt: {fallData.createdAt}</Text>
                                 </Card>
-                            )}
-                            {fallResponses && fallResponses.length ? (
+                            )} */}
+                            {fallResponses && fallResponses.length && fallResponsesETA && fallResponsesETA.length ? (
                                 <View>
-                                    <Text>Help is on the way</Text>
+                                    <Text style={{ fontWeight: 'bold', marginTop: 10, color: 'black',textAlign:"center" }}>HELP IS ON THE WAY!</Text>
                                     {fallResponses.map((response) => (
-                                        <Card key={response.id}>
-                                            <Text>id: {response.id}</Text>
-                                            <Text>Rescue by: {response.familyId ? "Family member" : "Volunteer"}</Text>
+                                        <Card style={styles.cardstyle} key={response.id}>
+                                            {/* <Text>id: {response.id}</Text> */}
+                                            <Text style={styles.textStyle}>{response.familyId ? "FAMILY MEMBER" : "VOLUNTEER"}</Text>
+                                            <View style={styles.divider} />
                                             {response.family && (
                                                 <View>
-                                                    <Text>Family Member Name: {response.family.firstName} {response.family.lastName}</Text>
-                                                    <Text>Family Member Email: {response.family.email}</Text>
+                                                    <Text style={styles.textStyle}>{response.family.firstName} {response.family.lastName}</Text>
+                                                    {/* <Text style={styles.textStyle}>Family Member Email: {response.family.email}</Text> */}
                                                 </View>
                                             )}
                                             {response.volunteer && (
                                                 <View>
-                                                    <Text>volunteer Member Name: {response.volunteer.firstName} {response.volunteer.lastName}</Text>
-                                                    <Text>volunteer Member Email: {response.volunteer.email}</Text>
+                                                    <Text style={styles.textStyle}>{response.volunteer.firstName} {response.volunteer.lastName}</Text>
+                                                    {/* <Text>volunteer Member Email: {response.volunteer.email}</Text> */}
                                                 </View>
                                             )}
-                                            {fallResponsesETA && fallResponsesETA.length && (
+                                            {/* {fallResponsesETA && fallResponsesETA.length && (
                                                 <Text>flflflfl: {fallResponsesETA.length}</Text>
-                                            )}
+                                            )} */}
+
+                        
                                             {fallResponsesETA && fallResponsesETA.length && (
                                                 <>
-                                                    <Text>alalalala</Text>
+                                                    {/* <Text>alalalala</Text> */}
                                                     {fallResponsesETA.map((responseETA) => (
                                                         <View key={responseETA.id}>
                                                             {responseETA.id == response.id && (
-                                                                <View>
-                                                                    <Text>Rescuer Location: {responseETA.eta.address}</Text>
-                                                                    <Text>Rescuer Distance: {responseETA.eta.distance}</Text>
-                                                                    <Text>Rescuer Time to reach: {responseETA.eta.duration}</Text>
+                                                                <View style={styles.location}>
+                                                                <Text style={[styles.alertText, {textAlign:"center"}]} >FALL LOCATION</Text>
+                                                                <Text style={[styles.alertText, {padding:10} , {fontWeight:'bold'}]}>{responseETA.eta.address}</Text>
                                                                 </View>
+                                                                // <View>
+                                                                //     <Text>Rescuer Location: {responseETA.eta.address}</Text>
+                                                                //     <Text>Rescuer Distance: {responseETA.eta.distance}</Text>
+                                                                //     <Text>Rescuer Time to reach: {responseETA.eta.duration}</Text>
+                                                                // </View>
                                                             )}
+                                                            {responseETA.id == response.id && (
+                        <View style={styles.etaview}>
+                        <View style={styles.half}>
+                        <Text style={[styles.alertText, {textAlign:"center"} ]} >Distance</Text>
+                        <Text style={[styles.alertText, {padding:10}, {fontWeight:'bold'}, {fontSize:23}]}>{responseETA.eta.distance}</Text>
+                        </View>
+                        <View style={styles.divider} />
+                        <View style={styles.half}>
+                        <Text style={[styles.alertText, {textAlign:"center"}]} >ETA</Text>
+                        <Text style={[styles.alertText, {padding:10}, {fontWeight:'bold'}, {fontSize:23}]}>{responseETA.eta.duration}</Text>
+                          </View>
+                        </View>
+                    )}                                                                
+                                                            
+                                                            
                                                         </View>
                                                     ))}
                                                 </>
@@ -347,8 +370,8 @@ export default function Track({ route, navigation }) {
                                 </View>
                             ) : (
                                 <View>
-                                    <Text style={[styles.message, { fontWeight: 'bold' }, { fontSize: 30 }]}>Finding help for you!</Text>
-                                    <ActivityIndicator animating={true} color={theme.colors.secondary} size={70} marginBottom={250} />
+                                    <Text style={[styles.message, { fontWeight: 'bold' }, { fontSize: 30 }]}>Hang tight we are coming for you!</Text>
+                                    <ActivityIndicator animating={true} color={theme.colors.secondary} size={70} marginBottom={100} />
                                 </View>
                             )}
 
@@ -365,9 +388,11 @@ export default function Track({ route, navigation }) {
                         </View>
                     )}
                 </View>
+                </ScrollView>
             )
             }
         </View >
+
     )
 }
 
@@ -383,7 +408,62 @@ const styles = StyleSheet.create({
     message: {
         textAlign: 'center',
         fontSize: 20,
-        marginBottom: 230,
+        marginBottom: 80,
         color: theme.colors.primary
     },
+    cardstyle: {
+        backgroundColor:theme.colors.primary,
+        marginTop: 20,
+    },
+    textStyle: {
+        color: "#FFFFFF",
+        marginLeft:10,
+        marginBottom:5
+    },
+    divider: {
+        borderBottomColor: '#000000',
+        borderBottomWidth: 1,
+        marginBottom: 8,
+      },
+      location: {
+        borderWidth: 2,
+        borderColor: 'black',
+        borderRadius: 10, // Adjust the value to change the roundness of the corners
+        padding: 10,
+        backgroundColor:"#FFFFFF"
+      },
+      etaview: {
+        flexDirection: 'row',
+    borderWidth: 2,
+    borderColor: 'black',
+    borderRadius: 10,
+    overflow: 'hidden', 
+    marginBottom:10
+      },
+      half: {
+        flex: 1,
+        padding: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      caption: {
+        textAlign: 'center',
+        fontSize: 20,
+        marginBottom: 10,
+        color: theme.colors.primary
+    },
+    image: {
+        //    flex:1,
+        marginTop:20,
+             width: '100%',
+            height: 400,
+        },
+        lastbutton: {
+            marginTop:20,
+           
+            justifyContent: 'center',
+                alignItems: 'center',
+               
+                padding: 10,
+          },
 });
