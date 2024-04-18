@@ -249,6 +249,29 @@ export default function Track({ route, navigation }) {
 
     }, [])
 
+    const nearbyResources = [
+        {
+            name: "AdventHealth Tampa",
+            duration: "5 min",
+            distance: '1.2 miles'
+        },
+        {
+            name: "USF Health",
+            duration: "2 min",
+            distance: '0.6 miles'
+        },
+        {
+            name: "University Community Medical Center",
+            duration: "6 min",
+            distance: '1.5 miles'
+        },
+        {
+            name: "Brandon Regional Hospital at Temple Terrace",
+            duration: "7 min",
+            distance: '2.8 miles'
+        }
+    ]
+
     return (
         <View style={styles.container}>
             {showLoading ? (
@@ -327,6 +350,17 @@ export default function Track({ route, navigation }) {
                                     <Text>Image comes here</Text>
                                 </Card>
                             )}
+
+                            <View>
+                                <Text>Nearby Help Respurces</Text>
+                                {nearbyResources.map((resource) => (
+                                    <View key={resource.name}>
+                                        <Text>{resource.name}</Text>
+                                        <Text>Distance: {resource.duration}</Text>
+                                        <Text>Duration: {resource.distance}</Text>
+                                    </View>
+                                ))}
+                            </View>
                         </View>
                     )}
                 </View>
