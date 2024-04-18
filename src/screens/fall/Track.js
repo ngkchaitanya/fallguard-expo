@@ -4,6 +4,7 @@ import { FallContext } from "../../contexts/FallContext";
 import { get, onValue, ref } from "firebase/database";
 import { FirebaseContext } from "../../contexts/FirebaseContext";
 import { ActivityIndicator, Button, Card } from "react-native-paper";
+import theme from "../../css/theme";
 // import { Text } from "react-native-paper";
 
 export default function Track({ route, navigation }) {
@@ -51,7 +52,7 @@ export default function Track({ route, navigation }) {
                     if (allFallResponses) {
                         console.log("got all fall responses")
 
-                        for (const [key, item] of Object.entries(userFamilyData)) {
+                        for (const [key, item] of Object.entries(allFallResponses)) {
                             console.log("item: ", item)
                             if (item.fallId == localFallId && "acceptedAt" in item && item.acceptedAt) {
                                 console.log("fall id matches")
@@ -176,23 +177,13 @@ export default function Track({ route, navigation }) {
             {showLoading ? (
                 <ActivityIndicator animating={true} size={40} color={'green'} />
             ) : (
-                <>
-                    <Text>Track</Text>
-                    <Button onPress={() => removeFall()}>
+                <View>
+                    {/* <Text>Track</Text> */}
+                    {/* <Button onPress={() => removeFall()}>
                         Remove Fall
-                    </Button>
-                    {fallData && (
-                        <Card>
-                            <Text>Fall Data:</Text>
-                            <Text>id: {fallData.id}</Text>
-                            <Text>deviceName: {fallData.deviceName}</Text>
-                            <Text>severity: {fallData.severity}</Text>
-                            <Text>deviceLat: {fallData.deviceLat}</Text>
-                            <Text>deviceLong: {fallData.deviceLong}</Text>
-                            <Text>createdAt: {fallData.createdAt}</Text>
-                        </Card>
-                    )}
-                    {fallResponses && fallResponses.length && (
+                    </Button> */}
+                    
+                    {fallResponses && fallResponses.length ? (
                         <View>
                             <Text>Fall Responses</Text>
                             {fallResponses.map((response) => (
@@ -201,8 +192,14 @@ export default function Track({ route, navigation }) {
                                 </Card>
                             ))}
                         </View>
+                    ) :  (
+                        <View>
+            <Text style={[styles.message, { fontWeight: 'bold' }, {fontSize:30}]}>Finding help for you!</Text>
+                        <ActivityIndicator animating={true} color={theme.colors.secondary} size={70} marginBottom={250}/>
+           
+            </View>
                     )}
-                </>
+                </View>
             )
             }
         </View >
@@ -217,5 +214,11 @@ const styles = StyleSheet.create({
     },
     text: {
         textAlign: 'center',
+    },
+    message: {
+        textAlign: 'center',
+        fontSize: 20,
+        marginBottom: 230,
+        color: theme.colors.primary
     },
 });

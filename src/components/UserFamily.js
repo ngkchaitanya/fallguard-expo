@@ -16,15 +16,14 @@ export default function UserFamily({ userSentFamily, userReceivedFamily }) {
                             {/* <Text>{request.id}</Text> */}
                             {request.familyMember && (
                                 <>
-                                    <Text>Sent To: {request.familyMember.email}</Text>
-                                    <Text>familyMember First Name: {request.familyMember.firstName}</Text>
-                                    <Text>familyMember Last Name: {request.familyMember.lastName}</Text>
+                                    {/* <Text>Sent To: {request.familyMember.email}</Text> */}
+                                    <Text>{request.familyMember.firstName} {request.familyMember.lastName}</Text>
                                 </>
                             )}
 
                             {/* <Text>Sent At: {request.requestedAt}</Text> */}
-                            <Text>Sent At: {new Date(request.requestedAt).toLocaleString()}</Text>
-                            <Text>Accepted At: {new Date(request.acceptedAt).toLocaleString()}</Text>
+                            {/* <Text>Sent At: {new Date(request.requestedAt).toLocaleString()}</Text>
+                            <Text>Accepted At: {new Date(request.acceptedAt).toLocaleString()}</Text> */}
                         </View>
                     </View>
                 ))}
