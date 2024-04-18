@@ -130,7 +130,8 @@ export const FallProvider = ({ children }) => {
 
     useEffect(() => {
         console.log("--- Initial Subscription UseEffect ---")
-        // _subscribe();
+        // @TODO: check
+        _subscribe();
         return () => _unsubscribe();
     }, []);
 
@@ -192,19 +193,19 @@ export const FallProvider = ({ children }) => {
 
     return (
         <FallContext.Provider value={{ fallDetected, accData, gyroData, currentFallId, resetFallDetection, storeFall, removeFall, storeFallResponse, removeFallResponse }}>
-            <View style={styles.container}>
+            {/* <View style={styles.container}>
                 <Text style={styles.text}>Accelerometer:</Text>
                 <Text style={styles.text}>x: {accData.x}</Text>
-                {/* <Text style={styles.text}>y: {accData.y}</Text>
-                <Text style={styles.text}>z: {accData.z}</Text> */}
+                <Text style={styles.text}>y: {accData.y}</Text>
+                <Text style={styles.text}>z: {accData.z}</Text>
                 <Text style={styles.text}>Gyroscope:</Text>
                 <Text style={styles.text}>x: {gyroData.x}</Text>
-                {/* <Text style={styles.text}>y: {gyroData.y}</Text>
-                <Text style={styles.text}>z: {gyroData.z}</Text> */}
+                <Text style={styles.text}>y: {gyroData.y}</Text>
+                <Text style={styles.text}>z: {gyroData.z}</Text>
             </View>
             <TouchableOpacity style={styles.button} onPress={_localFallDetect}>
                 <Text style={styles.buttonText}>Detect Fall</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             {children}
         </FallContext.Provider>
     );

@@ -293,7 +293,10 @@ export default function Track({ route, navigation }) {
                             {/* <Text>Track</Text> */}
                             {/* <Button onPress={() => removeFall()}>
                                 Remove Fall
+
                             </Button> */}
+
+
                             {/* {fallData && (
                                 <Card>
                                     <Text>Fall Data:</Text>
@@ -375,15 +378,26 @@ export default function Track({ route, navigation }) {
                                 </View>
                             )}
 
-                            <View>
-                                <Text>Nearby Help Respurces</Text>
-                                {nearbyResources.map((resource) => (
-                                    <View key={resource.name}>
-                                        <Text>{resource.name}</Text>
-                                        <Text>Distance: {resource.duration}</Text>
-                                        <Text>Duration: {resource.distance}</Text>
-                                    </View>
-                                ))}
+                            <View style={styles.resourcesContainer}>
+                                <Text style={styles.resourcesTitle}>Nearby Help Resources</Text>
+                                <View style={styles.resourcesTable}>
+                                    {nearbyResources.map((resource) => (
+                                        <View key={resource.name} style={styles.resourceRow}>
+                                            <Text style={styles.resourceTitle}>{resource.name}</Text>
+                                            <View style={styles.resourceETA}>
+                                                <View style={styles.resourceETACell}>
+                                                    <Text style={styles.resourceETACellLabel}>Distance: </Text>
+                                                    <Text style={styles.resourceETACellText}>{resource.distance}</Text>
+                                                </View>
+                                                <View style={styles.resourceETACell}>
+                                                    <Text style={styles.resourceETACellLabel}>Distance: </Text>
+                                                    <Text style={styles.resourceETACellText}>{resource.distance}</Text>
+                                                </View>
+                                            </View>
+
+                                        </View>
+                                    ))}
+                                </View>
                             </View>
                         </View>
                     )}
@@ -466,4 +480,46 @@ const styles = StyleSheet.create({
                
                 padding: 10,
           },
+    resourcesContainer: {
+        // backgroundColor: 'red',
+        marginTop: 20,
+    },
+    resourcesTitle: {
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    resourcesTable: {
+        borderWidth: 2,
+        borderColor: theme.colors.primary,
+        borderRadius: 8,
+        marginTop: 10,
+        overflow: "hidden"
+    },
+    resourceRow: {
+        borderWidth: 0.5,
+        borderColor: theme.colors.primary,
+        paddingVertical: 6,
+        paddingHorizontal: 10
+    },
+    resourceTitle: {
+        fontSize: 20
+    },
+    resourceETA: {
+        display: 'flex',
+        flexDirection: 'row',
+        marginTop: 4
+        // justifyContent: 'flex-start',
+        // backgroundColor: 'red'
+    },
+    resourceETACell: {
+        flex: 1,
+        flexDirection: 'row'
+    },
+    resourceETACellLabel: {
+        color: '#666666'
+    },
+    resourceETACellText: {
+        color: '#666666',
+        fontWeight: 'bold'
+    }
 });
