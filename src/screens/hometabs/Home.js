@@ -322,7 +322,7 @@ export default function Home({ navigation }) {
             (
 
                 <Card style={[globalStyles.marT20, styles.redCard]}>
-                    <View style={styles.details}>
+                    
                     {"isFamily" in liveFall && liveFall.isFamily ? (
                         <Text style={[styles.alertText, {textAlign:"center"}, {fontWeight:'bold'}]} >YOUR DEAR ONE FELL!!</Text>
                     ) : (
@@ -360,7 +360,7 @@ export default function Home({ navigation }) {
                         <Text style={[styles.alertText, {padding:10} , {fontWeight:'bold'}]}>{address}</Text>
                         </View>
                     )}
-                    </View>
+                    
                     <View style={styles.actButton}>
                     
                     {userLat && userLong ? (
@@ -451,11 +451,11 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     redCard: {
-        flex:1,
+        // flex:1,
         backgroundColor: 'red',
         padding: 20,
         borderRadius: 10,
-        marginBottom:80,
+        // marginBottom:80,
         marginTop: 40,
         elevation: 4, // Add elevation for shadow effect
     },

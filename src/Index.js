@@ -31,7 +31,7 @@ export default function Index() {
     const { fbDB } = useContext(FirebaseContext);
     const { user } = useContext(AuthContext);
     const { fallDetected, currentFallId } = useContext(FallContext);
-    console.log("in index");
+    // console.log("in index");
 
     return (
         <>

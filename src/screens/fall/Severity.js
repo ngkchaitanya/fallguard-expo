@@ -302,7 +302,7 @@ export default function Severity({ navigation }) {
         <ScrollView contentContainerStyle={styles.scrollViewContainer}>
         <View style={styles.container}>
         
-        <Text style={{ fontWeight: 'bold', marginTop: 10, color: 'black',textAlign:"center" }}>FALL DETECTED!</Text>
+        <Text style={{ fontWeight: 'bold', marginTop: 80, color: 'black',textAlign:"center" }}>FALL DETECTED!</Text>
             <Text style={{ fontWeight: 'bold', marginTop: 10, color: 'black',textAlign:"center" }}>We have detected a Fall. Do you need help?</Text>
             <View style={[styles.rowContainer, globalStyles.marT10]}>
     <View style={[styles.timerContainer, { flex: 1 }]}>

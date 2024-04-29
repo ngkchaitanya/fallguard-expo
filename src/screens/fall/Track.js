@@ -415,6 +415,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         paddingHorizontal: 10,
+        marginTop:60
     },
     text: {
         textAlign: 'center',
@@ -422,6 +423,7 @@ const styles = StyleSheet.create({
     message: {
         textAlign: 'center',
         fontSize: 20,
+        marginTop: 100,
         marginBottom: 80,
         color: theme.colors.primary
     },
@@ -430,7 +432,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     textStyle: {
-        color: "#FFFFFF",
+        
         marginLeft:10,
         marginBottom:5
     },
@@ -444,7 +446,6 @@ const styles = StyleSheet.create({
         borderColor: 'black',
         borderRadius: 10, // Adjust the value to change the roundness of the corners
         padding: 10,
-        backgroundColor:"#FFFFFF"
       },
       etaview: {
         flexDirection: 'row',
@@ -452,7 +453,8 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     borderRadius: 10,
     overflow: 'hidden', 
-    marginBottom:10
+    marginBottom:10,
+    marginTop: 10,
       },
       half: {
         flex: 1,

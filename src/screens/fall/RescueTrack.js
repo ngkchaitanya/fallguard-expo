@@ -202,7 +202,7 @@ export default function RescueTrack({ route, navigation }) {
   }, []);
 
   return (
-    <View>
+    <View style={{marginTop:60,paddingHorizontal:10}}>
       {victimRescued ? (
         <View style={{marginTop:80}}>
           <Text style={[styles.caption, { fontWeight: 'bold' }]}>Rescue Successful!</Text>

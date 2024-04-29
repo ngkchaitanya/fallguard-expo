@@ -37,7 +37,7 @@ export const FallProvider = ({ children }) => {
     const orientationThreshold = 1.5;
 
     const _subscribe = () => {
-        console.log("--- Subscription ---")
+        // console.log("--- Subscription ---")
         setFallDetected(false);
 
         Accelerometer.setUpdateInterval(100);
@@ -57,7 +57,7 @@ export const FallProvider = ({ children }) => {
     };
 
     const _unsubscribe = () => {
-        console.log("--- Unsubscription ---")
+        // console.log("--- Unsubscription ---")
         accSubscription && accSubscription.remove();
         gyroSubscription && gyroSubscription.remove();
 
@@ -66,7 +66,7 @@ export const FallProvider = ({ children }) => {
     };
 
     const resetFallDetection = () => {
-        console.log("came to reset!!")
+        // console.log("came to reset!!")
         // reset values
 
         setAccData({
@@ -129,7 +129,7 @@ export const FallProvider = ({ children }) => {
     }
 
     useEffect(() => {
-        console.log("--- Initial Subscription UseEffect ---")
+        // console.log("--- Initial Subscription UseEffect ---")
         // @TODO: check
         _subscribe();
         return () => _unsubscribe();
@@ -154,7 +154,7 @@ export const FallProvider = ({ children }) => {
         const getData = async () => {
             try {
                 const value = await AsyncStorage.getItem('fall-id');
-                console.log("get fall-id value: ", value)
+                // console.log("get fall-id value: ", value)
                 if (value !== null) {
                     // value previously stored
                     setCurrentFallId(value);
@@ -170,7 +170,7 @@ export const FallProvider = ({ children }) => {
 
     useEffect(() => {
         if (!fallDetected) {
-            console.log("--- Fall Check UseEffect ---")
+            // console.log("--- Fall Check UseEffect ---")
             const acceleration = Math.sqrt(accData.x * 2 + accData.y * 2 + accData.z ** 2);
 
             if (acceleration > fallThreshold) {
@@ -178,7 +178,7 @@ export const FallProvider = ({ children }) => {
 
                 if (orientationChange > orientationThreshold) {
                     // fallDetected = true;
-                    console.log('@@@ Fall detected!');
+                    // console.log('@@@ Fall detected!');
                     _unsubscribe();
                     setFallDetected(true);
 
