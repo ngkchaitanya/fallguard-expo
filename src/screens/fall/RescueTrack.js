@@ -119,13 +119,6 @@ export default function RescueTrack({ route, navigation }) {
   }, []);
 
   useEffect(() => {
-    if (distance && distance/ 5280 > 5) {
-      // Distance is more than 5 miles, navigate back to the previous page
-      navigation.goBack();
-    }
-  }, [distance, navigation]);
-
-  useEffect(() => {
     // check to see if any volunteer is also rescuing
     if (isFamily) {
       const fallResponsesRef = ref(fbDB, "fall_response");
