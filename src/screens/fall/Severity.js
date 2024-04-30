@@ -12,6 +12,8 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { deviceName } from "expo-device";
 import * as Device from 'expo-device';
 import * as Location from 'expo-location';
+import { Linking } from "react-native";
+
 
 export default function Severity({ navigation }) {
     const { fbDB } = useContext(FirebaseContext);
@@ -216,6 +218,9 @@ export default function Severity({ navigation }) {
             console.error('Error:', error);
         }
     }
+    const dial911 = () => {
+        Linking.openURL('tel:911'); // Open the phone dialer with the number dialed
+    };
 
     const startSound = async () => {
         console.log('Loading Sound');
@@ -375,7 +380,7 @@ export default function Severity({ navigation }) {
                 <FAB
                     icon="alert-octagon"
                     style={styles.fabButton}
-                    onPress={() => console.log('Pressed - call 911')}
+                    onPress={() => dial911()}
                     label="Call 911"
                     color="#fff"
                 />

@@ -9,6 +9,8 @@ import { Button, Card } from "react-native-paper";
 import { globalStyles } from "../../css/Global";
 import { getDistanceAndETA, getLocationAddress } from "../../util/ETA";
 import theme from "../../css/theme";
+import { LinearGradient } from 'expo-linear-gradient';
+
 
 // import {  }
 
@@ -316,6 +318,11 @@ export default function Home({ navigation }) {
     }, [liveFall])
 
     return (
+        <LinearGradient
+            colors={[theme.colors.primary, theme.colors.secondary]}
+            style={styles.outercontainer}
+        >
+            <View style={styles.innerContainer}>
         <View style={styles.container}>
             {/* <Text style={styles.text}>Home</Text> */}
             {liveFall && distance && (distance / 5280 <= 5) ?
@@ -380,23 +387,47 @@ export default function Home({ navigation }) {
                     </View>
                 </Card>
             ):(<>
-            
 
-            
-                
-            <Text style={[styles.caption, { fontWeight: 'bold' }]}>FALLGUARD</Text>
+          {user.isVolunteer ? (
+            <View>
+                <Text style={[styles.caption, { fontWeight: 'bold' }]}>Welcome Volunteer!</Text>
+                <Text style={styles.caption}>Thank you for being a part of our volunteer team.</Text>
+                <Button style={{ backgroundColor: theme.colors.secondary }}mode="contained" onPress={() => navigation.navigate('Tips')}>
+                    View Tips
+                </Button>
+            </View>
+        ) : (
+            <>
+               <Text style={[styles.caption, { fontWeight: 'bold' }]}>FALLGUARD</Text>
             <Text style={styles.caption}>Peace of mind in every step!</Text>
             <Image source={require('../../../assets/home.png')} style={styles.image} resizeMode="cover" />
+            </>
+        )}
+            
+
+          
            
             </>)}
 
         </View>
+        </View>
+        </LinearGradient>
     )
+    
 }
 
 const styles = StyleSheet.create({
-    container: {
+    outercontainer: {
         flex: 1,
+    },
+    innerContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        paddingHorizontal: 10,
+        backgroundColor: 'transparent',
+    },
+    container: {
+        flex: 0.9,
         justifyContent: 'center',
         paddingHorizontal: 10,
         backgroundColor: '#FFFFFF'
