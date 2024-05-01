@@ -104,6 +104,8 @@ export const FallProvider = ({ children }) => {
             await AsyncStorage.removeItem('fall-id')
 
             setCurrentFallId(null);
+            
+            resetFallDetection();
         } catch (error) {
             console.error("Error while trying to remove fall-id: ", error);
         }

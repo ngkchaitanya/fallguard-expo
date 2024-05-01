@@ -1,16 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-// import FallDetection from './src/screens/FallDetection';
-// import Entry from './src/screens/Entry';
-// import Home from './src/screens/Home';
-
-// import { FirebaseContext } from './src/contexts/FirebaseContext';
-// import Home from './screens/HomeTabs';
-import FallDetection from './screens/FallDetection';
-import Tracking from './screens/Tracking';
 import { FirebaseContext } from './contexts/FirebaseContext';
-import { Text, View } from 'react-native';
 import AppLoading from './screens/AppLoading';
 import { AuthContext } from './contexts/AuthContext';
 import Entry from './screens/onboarding/Entry';
@@ -20,8 +11,6 @@ import HomeTabs from './screens/HomeTabs';
 import { FallContext } from './contexts/FallContext';
 import Severity from './screens/fall/Severity';
 import Track from './screens/fall/Track';
-import ExistingTrack from './screens/fall/ExistingTrack';
-import NewTrack from './screens/fall/NewTrack';
 import RescueTrack from './screens/fall/RescueTrack';
 import Tips from './screens/hometabs/Tips';
 
