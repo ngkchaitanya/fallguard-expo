@@ -325,7 +325,7 @@ export default function Home({ navigation }) {
             <View style={styles.innerContainer}>
         <View style={styles.container}>
             {/* <Text style={styles.text}>Home</Text> */}
-            {liveFall && distance && (distance / 5280 <= 5) ?
+            {liveFall ?
             (
 
                 <Card style={[globalStyles.marT20, styles.redCard]}>
