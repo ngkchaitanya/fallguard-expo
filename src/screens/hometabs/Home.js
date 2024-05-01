@@ -133,6 +133,8 @@ export default function Home({ navigation }) {
 
                         if ("resolvedAt" in item && item.resolvedAt) {
                             // fall is resolved
+                        } else if ("isFalseDetection" in item && item.isFalseDetection) {
+                            // false +ve
                         } else {
                             liveFalls.push({
                                 id: key,
